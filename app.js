@@ -1,35 +1,19 @@
 import './style.css';
 import './configurator.css';
-import { presets, products, cloneBuild } from './data.js';
+import { presets, products, cloneBuild, estimateBuild, parts } from './data.js';
 import { initCommerce, openBuilder, openCart, openProduct, openSearch, openInfo } from './configurator.js';
-import { bottleIllustration, accessoryIllustration, stepIllustration, cleaningIllustration } from './illustrations.js';
+import { bottleIllustration, accessoryIllustration, stepIllustration } from './illustrations.js';
 
 const money = value => `$${Number(value).toFixed(0)}`;
 const safe = str => String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const featured = presets.slice(0, 3);
-const cardBackgrounds = ['#eee5d8', '#e1e9e3', '#e5e4e8'];
-const portraitAssets = { coral:'babo-daydreamer.webp', alpine:'babo-trail-mix.webp', ink:'babo-night-owl.webp' };
-
-document.querySelector('#popular-builds').innerHTML = featured.map((p, i) => `
-  <article class="product-card">
-    <div class="product-visual" style="--product-bg:${cardBackgrounds[i]}">
-      <span class="product-tag">${['CORAL / CREAM','TEAL / SKY','INK / CLOUD'][i]}</span>
-      <button data-product="${safe(p.id)}" aria-label="View details for ${safe(p.name)}">↗</button>
-      <div class="product-photo-fallback" aria-hidden="true">${bottleIllustration(p.build, `popular-${i}`)}</div>
-      <svg class="product-photograph" viewBox="${i*512} 0 512 1024" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${safe(p.name)} assembled bottle concept"><image href="/assets/babo-colorways.webp" width="1536" height="1024" /></svg>
-      <img class="product-portrait" src="/assets/${portraitAssets[p.id]}" width="1024" height="1536" alt="${safe(p.name)} Babo bottle concept, assembled in ${i===0?'coral, warm cream, and teal':i===1?'deep teal and sky blue':'ink and cloud'} colors." loading="lazy" decoding="async" />
-    </div>
-    <div class="product-bottom"><div><h3>${safe(p.name)}</h3><p>${i === 0 ? 'Coral / cream / teal' : i === 1 ? 'Sky / ocean' : 'Ink / cloud'}</p></div><span class="product-price">${money(p.price)}</span></div>
-    <div class="product-card-bottom"><div class="product-swatches" aria-label="${safe(p.name)} colors">${[...new Set(Object.values(p.build.colors))].slice(0,3).map(c => `<span style="--swatch:${c}"></span>`).join('')}</div><button data-build="${safe(p.id)}">Customize this <span aria-hidden="true">↗</span></button></div>
-  </article>`).join('');
-
-const accessoryIds = ['strap','pouch','clip','brush'];
+const accessoryIds = ['strap','pouch','clip','charm','phone','brush'];
 const accessoryItems = accessoryIds.map(id => products.find(p => p.partType === 'attachments' && p.partId === id)).filter(Boolean);
 document.querySelector('#accessory-products').innerHTML = accessoryItems.map((p,i) => `
-  <article class="accessory-card"><button class="accessory-visual" data-product="${safe(p.id)}" aria-label="View ${safe(p.name)}" style="background:${['#e8e4da','#eee0d2','#e0e8e2','#e9e5dc'][i]};width:100%">${accessoryIllustration(p.partId,`accessory-${i}`)}<span>${['CARRY STRAP','POCKET POUCH','CARABINER','CLEANING BRUSH'][i]}</span></button><div class="accessory-bottom"><div><h3>${safe(p.name)}</h3><p>${money(p.price)} · Concept accessory</p></div><button data-product="${safe(p.id)}" aria-label="Explore ${safe(p.name)}">+</button></div></article>`).join('');
+  <article class="accessory-card"><button class="accessory-visual" data-product="${safe(p.id)}" aria-label="View ${safe(p.name)}" style="background:${['#e8e4da','#eee0d2','#e0e8e2','#e9e5dc'][i%4]};width:100%">${accessoryIllustration(p.partId,`accessory-${i}`)}<span>${safe(p.name.toUpperCase())}</span></button><div class="accessory-bottom"><div><h3>${safe(p.name)}</h3><p>${money(p.price)} · Concept accessory</p></div><button data-product="${safe(p.id)}" aria-label="Explore ${safe(p.name)}">+</button></div></article>`).join('');
 
 ['foundation','lid','body','accessories'].forEach(step => {document.querySelector(`#step-${step}`).innerHTML = stepIllustration(step);});
-document.querySelector('.cleaning-fallback').innerHTML = cleaningIllustration();
+
 
 document.querySelector('.hero-presets').innerHTML = featured.map((p,i) => `<button class="hero-preset" aria-pressed="${i===0}" data-hero-preset="${safe(p.id)}" style="--preset-color:${p.build.colors.lid}" aria-label="Preview ${safe(p.name)}"><i class="preset-dot" aria-hidden="true"></i>${safe(p.name)}<span aria-hidden="true">↗</span></button>`).join('');
 let activeHeroPreset = featured[0].id;
@@ -100,55 +84,12 @@ if(heroPhoto.complete) markHeroPhotoReady();
 heroPhoto.addEventListener('error',()=>heroPhotography.classList.remove('is-loaded'));
 updateHeroPhoto();
 heroMedia.addEventListener('change', updateHeroPhoto);
-document.querySelectorAll('.product-portrait').forEach(img=>{
-  const ready=()=>{if(img.naturalWidth)img.closest('.product-visual').classList.add('has-portrait');};
-  img.addEventListener('load',ready);if(img.complete)ready();
-});
-const colorwayImage = new Image();
-colorwayImage.addEventListener('load',()=>{
-  document.querySelectorAll('.product-photograph').forEach((svg,i)=>{
-    svg.setAttribute('viewBox',`${i*colorwayImage.naturalWidth/3} 0 ${colorwayImage.naturalWidth/3} ${colorwayImage.naturalHeight}`);
-    const img=svg.querySelector('image');img.setAttribute('width',colorwayImage.naturalWidth);img.setAttribute('height',colorwayImage.naturalHeight);
-    svg.closest('.product-visual').classList.add('has-photography');
-  });
-});
-colorwayImage.src='/assets/babo-colorways.webp';
-const everydayPhoto=document.querySelector('.everyday-photo');
-const markEveryday=()=>{if(everydayPhoto.naturalWidth)everydayPhoto.closest('.everyday-visual').classList.add('has-photography');};
-everydayPhoto.addEventListener('load',markEveryday);if(everydayPhoto.complete)markEveryday();
-const detailPhoto=document.querySelector('#cleaning-art>img');
-const markDetails=()=>{if(detailPhoto.naturalWidth)detailPhoto.parentElement.classList.add('has-photography');};
-detailPhoto.addEventListener('load',markDetails);if(detailPhoto.complete)markDetails();
-
-const dailyBase = cloneBuild(presets[0].build);
-dailyBase.extension = 'none';dailyBase.body='smooth';dailyBase.attachments=[];
-const extraBase = cloneBuild(presets[0].build);
-extraBase.extension='long';extraBase.body='handle';extraBase.colors.body='#007d87';extraBase.colors.handle='#f36f60';
-const handsBase = cloneBuild(presets[1].build);
-handsBase.body='smooth';handsBase.extension='none';handsBase.attachments=['strap','pouch'];
-const days = {
-  daily: {build:dailyBase,title:'The everyday setup.',copy:'Choose a body and colors. Add only the parts you need.',preset:'coral'},
-  extra: {build:extraBase,title:'Add an extension.',copy:'Change the size with an extra module. Choose a handle if you need one.',preset:'coral'},
-  handsfree: {build:handsBase,title:'Add a carry strap.',copy:'Keep your hands free. Add a pouch for small essentials.',preset:'alpine'}
-};
-let currentDay='daily';
-function setDay(id){
-  if(!days[id])return;
-  currentDay=id;
-  document.querySelectorAll('[data-day]').forEach(b=>{b.setAttribute('aria-selected',String(b.dataset.day===id));b.tabIndex=b.dataset.day===id?0:-1;});
-  document.querySelector('#day-title').textContent=days[id].title;
-  document.querySelector('#day-copy').textContent=days[id].copy;
-  document.querySelector('#everyday-bottle').innerHTML=bottleIllustration(days[id].build,`everyday-${id}`);
-}
-setDay('daily');
-
 initCommerce();
 
 document.addEventListener('click', e => {
   const buildButton = e.target.closest('[data-build]');
   if(buildButton){
-    if(buildButton.id==='day-build') openBuilder(days[currentDay].build);
-    else openBuilder(buildButton.dataset.build);
+    openBuilder(buildButton.dataset.build);
     closeMenu();return;
   }
   const heroButton=e.target.closest('[data-hero-preset]');
@@ -156,23 +97,14 @@ document.addEventListener('click', e => {
     activeHeroPreset=heroButton.dataset.heroPreset;
     updateHeroPhoto();
     document.querySelectorAll('[data-hero-preset]').forEach(b=>b.setAttribute('aria-pressed',String(b===heroButton)));
-    document.querySelector('.hero-actions [data-build]').dataset.build=heroButton.dataset.heroPreset;
+
     return;
   }
   if(e.target.closest('[data-cart]')){openCart();return;}
   const productButton=e.target.closest('[data-product]');if(productButton){openProduct(productButton.dataset.product);return;}
   if(e.target.closest('[data-search]')){openSearch();return;}
   const infoButton=e.target.closest('[data-info]');if(infoButton){openInfo(infoButton.dataset.info);closeMenu();return;}
-  const dayButton=e.target.closest('[data-day]');if(dayButton){setDay(dayButton.dataset.day);return;}
   if(e.target.closest('.main-nav a'))closeMenu();
-});
-
-document.querySelector('.day-tabs').addEventListener('keydown',e=>{
-  if(['ArrowRight','ArrowLeft','Home','End'].includes(e.key)){
-    e.preventDefault();const keys=Object.keys(days);let i=keys.indexOf(currentDay);
-    if(e.key==='Home')i=0;else if(e.key==='End')i=keys.length-1;else i=(i+(e.key==='ArrowRight'?1:-1)+keys.length)%keys.length;
-    setDay(keys[i]);document.querySelector(`[data-day="${keys[i]}"]`).focus();
-  }
 });
 
 const menuToggle=document.querySelector('.menu-toggle');
@@ -231,3 +163,35 @@ document.querySelector('#brand-reset').addEventListener('click',()=>{
 });
 updateBrandText();
 window.addEventListener('pagehide',event=>{if(!event.persisted&&brandObjectUrl)URL.revokeObjectURL(brandObjectUrl);});
+
+
+// A simple first build, carried into the full component configurator.
+const makerBuild=cloneBuild(presets[0].build);
+makerBuild.extension='none';
+let previousMakerHeight=0;
+function renderMaker(){
+ const options=(id,type,values)=>{document.querySelector(id).innerHTML=values.map(p=>`<button data-maker-type="${type}" data-maker-value="${p.id}" aria-pressed="${makerBuild[type]===p.id}">${safe(p.name)}</button>`).join('');};
+ options('#maker-sizes','foundation',parts.foundation);
+ options('#maker-extensions','extension',parts.extension);
+ document.querySelector('#maker-colors').innerHTML=presets.slice(0,3).map(p=>`<button data-maker-color="${p.id}" aria-label="${safe(p.name)}" aria-pressed="${makerBuild.colors.body===p.build.colors.body && makerBuild.colors.lid===p.build.colors.lid}"><i style="background:${p.build.colors.lid}"></i><i style="background:${p.build.colors.body}"></i>${safe(p.name)}</button>`).join('');
+ document.querySelector('#maker-extras').innerHTML=parts.attachments.map(p=>`<button data-maker-extra="${p.id}" aria-pressed="${makerBuild.attachments.includes(p.id)}">${makerBuild.attachments.includes(p.id)?'✓':'+'} ${safe(p.name)}</button>`).join('');
+ const preview=document.querySelector('#maker-preview');preview.innerHTML=bottleIllustration(makerBuild,'inline-maker');
+ const height=38+(makerBuild.foundation==='mini'?104:makerBuild.foundation==='max'?164:136)+(makerBuild.extension==='none'?0:makerBuild.extension==='long'?54:32)+37;
+ if(previousMakerHeight && !matchMedia('(prefers-reduced-motion: reduce)').matches) preview.querySelector('svg').animate([{transform:`scaleY(${previousMakerHeight/height})`},{transform:'scaleY(1)'}],{duration:350,easing:'cubic-bezier(.2,.7,.3,1)'});
+ previousMakerHeight=height;
+ const estimate=estimateBuild(makerBuild);
+ document.querySelector('#maker-capacity').textContent=`Approx. ${estimate.capacity} ml`;
+ document.querySelector('#maker-price').textContent=`$${estimate.total} demo total`;
+ preview.setAttribute('aria-label',`${estimate.capacity} milliliter bottle, ${makerBuild.extension==='none'?'no':makerBuild.extension} extension, ${makerBuild.attachments.length} attachments`);
+}
+document.querySelector('.maker-controls').addEventListener('click',e=>{
+ const part=e.target.closest('[data-maker-type]'),color=e.target.closest('[data-maker-color]'),extra=e.target.closest('[data-maker-extra]');
+ if(part)makerBuild[part.dataset.makerType]=part.dataset.makerValue;
+ else if(color)makerBuild.colors=cloneBuild(presets.find(p=>p.id===color.dataset.makerColor).build.colors);
+ else if(extra){const id=extra.dataset.makerExtra;makerBuild.attachments=makerBuild.attachments.includes(id)?makerBuild.attachments.filter(x=>x!==id):[...makerBuild.attachments,id];}
+ else return;
+ const key=part?'[data-maker-type="'+part.dataset.makerType+'"][data-maker-value="'+part.dataset.makerValue+'"]':color?'[data-maker-color="'+color.dataset.makerColor+'"]':'[data-maker-extra="'+extra.dataset.makerExtra+'"]';
+ renderMaker();document.querySelector(key)?.focus({preventScroll:true});
+});
+document.querySelector('#maker-continue').addEventListener('click',()=>openBuilder(makerBuild));
+renderMaker();

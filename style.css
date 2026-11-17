@@ -242,3 +242,27 @@ h3{letter-spacing:-.025em}
 /* Keep the footer signature understated. */
 .footer-wordmark{width:180px;max-width:45%;margin:32px 0 24px}
 @media(max-width:640px){.footer-wordmark{width:140px;margin:24px 0 20px}}
+
+/* One clear path: discover, understand, attach, create. */
+.accessory-grid{grid-template-columns:repeat(3,1fr);gap:24px}
+.accessory-visual{height:210px}
+.maker-layout{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;background:#eee8de;border-radius:16px;padding:32px}
+.maker-stage{height:500px;position:relative;display:grid;place-items:center;background:#f7f1e7;border-radius:12px}
+#maker-preview{width:100%;height:460px;display:grid;place-items:center}
+#maker-preview svg{height:100%;width:auto;transform-origin:50% 90%}
+.maker-stage-note{position:absolute;bottom:16px;font-size:11px;color:var(--muted)}
+.maker-controls fieldset{border:0;padding:0;margin:0 0 22px;min-width:0}
+.maker-controls legend{font-size:14px;font-weight:700;margin-bottom:10px}
+.maker-options,.maker-extras{display:flex;flex-wrap:wrap;gap:8px}
+.maker-options button,.maker-extras button{min-height:44px;padding:10px 14px;border:1px solid #17171730;border-radius:24px;background:#f7f1e7;font-size:12px}
+.maker-options button[aria-pressed=true],.maker-extras button[aria-pressed=true]{background:#171717;color:#f7f1e7;border-color:#171717}
+.maker-options i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:3px}
+.maker-summary{display:flex;justify-content:space-between;gap:16px;border-top:1px solid #17171720;padding:18px 0;font-size:14px}
+.maker-controls>.button{width:100%}.maker-note{font-size:11px;color:var(--muted);margin-top:12px}
+.optional-branding{max-width:1152px;margin:24px auto 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.optional-branding>summary{cursor:pointer;padding:24px;font-size:18px;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:20px}
+.optional-branding>summary span{font-size:13px;font-weight:500}.optional-branding .branding-section{margin:0;max-width:none}
+.how-section .step-visual{height:130px}.how-section .step-visual svg{height:110px}
+@media(max-width:900px){.maker-layout{gap:24px;padding:24px}.optional-branding{margin-inline:24px}}
+@media(max-width:640px){.accessory-grid{grid-template-columns:repeat(2,1fr);gap:20px 12px}.accessory-visual{height:165px}.maker-layout{grid-template-columns:1fr;padding:20px;gap:24px}.maker-stage{height:300px}#maker-preview{height:280px}.maker-controls fieldset{margin-bottom:20px}.maker-summary{font-size:13px}.optional-branding{margin-inline:20px}.optional-branding>summary{padding:20px 0;font-size:15px}.optional-branding>summary span{font-size:11px}.section-heading>p{font-size:14px;line-height:1.6}.maker-options button,.maker-extras button{padding:10px 12px}}
+.accessories-section{padding-bottom:24px}.maker-section{padding-top:40px}

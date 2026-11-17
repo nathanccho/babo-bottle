@@ -22,7 +22,9 @@ npm run preview -- --port 3000
 
 ## Included
 
-- Responsive storefront with photorealistic campaign imagery, modular anatomy, curated builds, accessories, and care information.
+- Focused landing-page journey: combination imagery, brief how-it-works steps, six attachments, and an inline make-your-own station.
+- The inline bottle grows/shrinks with size and extension changes, updates estimated price/capacity, and carries the exact setup into the full configurator.
+- Optional branding preview stays in an expandable section after the main journey.
 - Six-step builder with per-module and handle colors, optional extensions and attachments, live estimated capacity and component pricing.
 - Live 2D configuration preview with independent colors, compact handles, capacity extensions, and attachments.
 - Presets, random colors, match-all, undo/redo, reset, and shareable configurations encoded in the URL.

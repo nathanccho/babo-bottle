@@ -38,13 +38,53 @@ const heroPhoto = document.querySelector('#hero-photo');
 const heroPhotoMobile = document.querySelector('#hero-photo-mobile');
 const heroPhotography = document.querySelector('#hero-photography');
 const heroMedia = window.matchMedia('(max-width: 640px)');
-document.querySelector('#hero-photo-hotspots').innerHTML=featured.map(p=>`<button class="hero-photo-hotspot" data-build="${safe(p.id)}" aria-label="Customize ${safe(p.name)}"><span>Customize ${safe(p.name.replace(/^The /,'the '))} <i aria-hidden="true">↗</i></span></button>`).join('');
+const partRegions = [
+  ['coral','Straw lid',255,65,245,230],['coral','Smooth body',250,310,240,345],
+  ['coral','Clear extension',250,675,245,140],['coral','Base',245,835,250,135],
+  ['alpine','Loop lid',640,100,250,235],['alpine','Ribbed body',635,355,245,420],
+  ['alpine','Carry strap',880,370,130,415],['alpine','Narrow base',640,810,250,110],
+  ['ink','Chug lid',1070,25,255,185],['ink','Handle body',1055,245,195,315],
+  ['ink','Compact handle',1250,300,100,175],['ink','Clear extension',1060,580,255,240],
+  ['ink','Base',1060,835,260,140]
+];
+const partHotspots=document.querySelector('#hero-photo-hotspots');
+partHotspots.innerHTML=`<svg class="part-hit-map" viewBox="0 0 1536 1024" preserveAspectRatio="xMidYMid slice" aria-label="Explore bottle parts">${partRegions.map(([id,name,x,y,w,h])=>`<a href="#" data-build="${id}" data-part-name="${name}" aria-label="${name}: customize ${featured.find(p=>p.id===id).name}" aria-describedby="hero-part-tooltip"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="16"/><title>${name}</title></a>`).join('')}</svg><span id="hero-part-tooltip" class="part-tooltip" role="tooltip" hidden></span>`;
+const partMap=partHotspots.querySelector('svg');
+const partTooltip=partHotspots.querySelector('.part-tooltip');
+function showPart(link,event){
+  partTooltip.textContent=link.dataset.partName;partTooltip.hidden=false;
+  const bounds=partHotspots.getBoundingClientRect();
+  const target=link.getBoundingClientRect();
+  const x=event?.clientX ? event.clientX-bounds.left : target.left-bounds.left+target.width/2;
+  const y=event?.clientY ? event.clientY-bounds.top : target.top-bounds.top;
+  partTooltip.style.left=`${Math.max(78,Math.min(bounds.width-78,x))}px`;
+  partTooltip.style.top=`${Math.max(12,Math.min(bounds.height-42,y-40))}px`;
+}
+partHotspots.querySelectorAll('[data-part-name]').forEach(link=>{
+  link.addEventListener('pointerenter',e=>showPart(link,e));
+  link.addEventListener('pointermove',e=>showPart(link,e));
+  link.addEventListener('focus',()=>showPart(link));
+  link.addEventListener('blur',()=>{partTooltip.hidden=true;});
+  link.addEventListener('click',e=>{
+    e.preventDefault();
+    if(window.matchMedia('(hover: none)').matches && partTooltip.dataset.selected!==link.dataset.partName){
+      e.stopPropagation();partTooltip.dataset.selected=link.dataset.partName;showPart(link,e);
+    }
+  });
+  link.addEventListener('keydown',e=>{if(e.key===' '){e.preventDefault();link.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}));}if(e.key==='Escape')partTooltip.hidden=true;});
+});
+partHotspots.addEventListener('pointerleave',()=>{partTooltip.hidden=true;delete partTooltip.dataset.selected;});
+
 function updateHeroPhoto() {
   const i = Math.max(0, featured.findIndex(p => p.id === activeHeroPreset));
   const panelWidth = heroImageSize.width / 3;
   heroPhotoMobile.setAttribute('viewBox', `${i*panelWidth} 0 ${panelWidth} ${heroImageSize.height}`);
   heroPhotoMobile.setAttribute('aria-label', `${featured[i].name} exploded bottle concept`);
-  document.querySelectorAll('.hero-photo-hotspot').forEach(button=>{const active=button.dataset.build===activeHeroPreset;button.classList.toggle('is-active',active);button.tabIndex=heroMedia.matches&&!active?-1:0;});
+  partMap.setAttribute('viewBox',heroMedia.matches?`${i*512} 0 512 1024`:'0 0 1536 1024');
+  partMap.setAttribute('preserveAspectRatio',heroMedia.matches?'xMidYMid meet':'xMidYMid slice');
+  partHotspots.querySelectorAll('[data-part-name]').forEach(link=>{link.tabIndex=heroMedia.matches&&link.dataset.build!==activeHeroPreset?-1:0;});
+  partTooltip.hidden=true;delete partTooltip.dataset.selected;
+
   const image = heroPhotoMobile.querySelector('image');
   image.setAttribute('width', heroImageSize.width);image.setAttribute('height', heroImageSize.height);
   document.querySelector('.hero-photo-fallback').innerHTML = featured.map((p,j) => `<div class="hero-fallback-bottle ${j===i?'is-active':''}">${bottleIllustration(p.build,`hero-fallback-${j}`)}</div>`).join('');

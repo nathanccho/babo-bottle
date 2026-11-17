@@ -41,3 +41,9 @@
 @media(max-width:640px){.hero-intro{width:100%;max-width:none}.hero h1{font-size:clamp(45px,11vw,66px)}.hero-slogan{font-size:20px}.hero-actions .text-link{display:inline-flex}.hero-actions .button{font-size:11px;padding:13px 21px;min-height:45px}}
 
 h1,h2{font-weight:700}.hero h1{font-weight:700}
+
+/* Keep navigation visible and anchor destinations clear of the header. */
+html{scroll-padding-top:120px}
+.site-header{position:sticky;top:0;z-index:100;max-width:none;padding-inline:max(24px,calc((100% - 1152px)/2));background:var(--cream);border-bottom:1px solid #17171726;box-shadow:0 4px 14px #17171708}
+@media(max-width:850px){html{scroll-padding-top:107px}}
+@media(max-width:640px){html{scroll-padding-top:96px}.site-header{padding-inline:20px}}

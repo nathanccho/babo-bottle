@@ -52,7 +52,7 @@ Fonts load from Google Fonts with local sans-serif fallbacks. No application tra
 - `illustrations.js`: original code-generated SVG product and accessory illustrations.
 - `public/assets/`: optimized full-resolution WebP marketing photographs.
 - `assets/originals/`: lossless PNG image masters.
-- `assets/README.md`, `assets/COVER_AND_ATTACHMENTS.md`, `assets/FINAL_PHOTO_EDITS.md`, `assets/STUDIO_COVER.md`, `assets/EXPLODED_AND_SNACK.md`, `assets/ATTACHMENT_LOOP.md`: image methods, reference paths, exact prompts, and native resolutions.
+- `assets/README.md`, `assets/COVER_AND_ATTACHMENTS.md`, `assets/FINAL_PHOTO_EDITS.md`, `assets/STUDIO_COVER.md`, `assets/EXPLODED_AND_SNACK.md`, `assets/ATTACHMENT_LOOP.md`, `assets/UPWARD_THREADS.md`: image methods, reference paths, exact prompts, and native resolutions.
 
 ## Validation
 

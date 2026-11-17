@@ -72,7 +72,7 @@ function renderPartCatalog(){
  document.querySelector('#part-category-filters').innerHTML=catalogCategories.map(([id,label])=>`<button data-part-filter="${id}" aria-pressed="${catalogCategory===id}">${label}</button>`).join('');
  const matches=catalogProducts.filter(p=>catalogCategory==='all'||p.partType===catalogCategory);
  const items=catalogCategory==='all'&&!catalogExpanded?catalogPreviewItems():matches;
- document.querySelector('#accessory-products').innerHTML=items.map(p=>`<article class="accessory-card"><button class="accessory-visual" data-product="${safe(p.id)}" aria-label="View ${safe(p.name)}"><img src="/assets/${p.partType==='attachments'?'attachment-'+p.partId:'part-'+p.partType+'-'+p.partId}.webp" width="1536" height="1024" alt="${safe(p.name)} concept" loading="lazy" decoding="async" /></button><div class="accessory-bottom"><div><h3><button data-product="${safe(p.id)}">${safe(p.name)}</button></h3><p>${money(p.price)}</p></div></div></article>`).join('');
+ document.querySelector('#accessory-products').innerHTML=items.map(p=>`<article class="accessory-card"><button class="accessory-visual" data-product="${safe(p.id)}" aria-label="View ${safe(p.name)}"><img src="/assets/${p.partType==='attachments'?'attachment-'+p.partId:'part-'+p.partType+'-'+p.partId}.webp?v=vibrant-gallery-3" width="1536" height="1024" alt="${safe(p.name)} concept" loading="lazy" decoding="async" /></button><div class="accessory-bottom"><div><h3><button data-product="${safe(p.id)}">${safe(p.name)}</button></h3><p>${money(p.price)}</p></div></div></article>`).join('');
  const toggle=document.querySelector('#parts-see-all');toggle.hidden=catalogCategory!=='all'||catalogProducts.length<=15;toggle.setAttribute('aria-expanded',String(catalogExpanded));toggle.textContent=catalogExpanded?'Show less':'See all';
  document.querySelector('#parts-visible-count').textContent=catalogCategory==='all'?`${items.length} of ${catalogProducts.length} parts`:`${items.length} parts`;
  document.querySelector('#part-filter-status').textContent=`${items.length} parts shown.`;
@@ -165,7 +165,7 @@ let makerNotice='';
 const coreOrder=['base','body','lid'];
 const coreLabels={base:'Base',body:'Body',lid:'Lid'};
 function makerCoreComplete(){return coreOrder.every(id=>makerPlaced.has(id));}
-function partPhoto(type,id){return `/assets/${type==='attachments'?'attachment-'+id:'part-'+type+'-'+id}.webp`;}
+function partPhoto(type,id){return `/assets/${type==='attachments'?'attachment-'+id:'part-'+type+'-'+id}.webp?v=vibrant-gallery-3`;}
 function makerSwatches(value,target,label='Color'){
  const choices=palettes.some(p=>p.value.toLowerCase()===value.toLowerCase())?palettes:[{name:'Current',value},...palettes];
  return `<div class="maker-color-field"><div class="maker-field-heading"><span>${label}</span><label class="maker-custom-color">Custom<input type="color" value="${value}" data-maker-custom-color="${target}" aria-label="Custom ${label.toLowerCase()}" /></label></div><div class="maker-swatches" role="group" aria-label="${label}">${choices.map(p=>`<button class="maker-swatch" style="--swatch:${p.value}" data-maker-action="color" data-maker-target="${target}" data-maker-value="${p.value}" aria-label="${label}: ${safe(p.name)}" aria-pressed="${p.value.toLowerCase()===value.toLowerCase()}" title="${safe(p.name)}"></button>`).join('')}</div></div>`;

@@ -75,9 +75,9 @@ function everydayAccessory(uid,id,color) {
 export function bottleIllustration(input={},uid='bottle',options={}) {
   uid=key(uid);
   const build={lid:'straw',body:'smooth',extension:'none',base:'standard',foundation:'core',attachments:[],...input};
-  const defaults={strap:'#ff4d36',pouch:'#fff6e2',clip:'#2455f5',charm:'#ff4d36',brush:'#007f82',phone:'#ff4d36',snack:'#007f82',ringloop:'#007f82',boot:'#007f82',sling:'#00a66c',strawkit:'#fff6e2',infuser:'#2455f5',gasket:'#132d66',stickers:'#ff4d36'};
+  const defaults={strap:'#ff4d36',pouch:'#f6297d',clip:'#2455f5',charm:'#ff4d36',brush:'#007f82',phone:'#8150ea',snack:'#ff4d36',ringloop:'#171717',boot:'#8150ea',sling:'#f6297d',strawkit:'#ffd02f',infuser:'#007f82',gasket:'#171717',stickers:'#ff4d36'};
   const attachments=Array.isArray(build.attachments)?build.attachments.filter(id=>Object.hasOwn(defaults,id)):[];
-  const colors={lid:'#ff4d36',body:'#ffd02f',extension:'#ffd02f',base:'#007f82',handle:'#ff4d36',...input.colors,...defaults,brass:'#bc8b3f',snackLid:'#fff6e2'};
+  const colors={lid:'#ff4d36',body:'#ffd02f',extension:'#ffd02f',base:'#007f82',handle:'#ff4d36',...input.colors,...defaults,brass:'#bc8b3f',snackLid:'#ffd02f'};
   for(const id of Object.keys(defaults))colors[id]=safeColor(build.attachmentColors?.[id],defaults[id]);
   for(const id of Object.keys(colors))colors[id]=safeColor(colors[id]);
   const extensions=Array.isArray(build.extensions)?build.extensions.filter(size=>['short','long'].includes(size)).slice(0,3):['short','long'].includes(build.extension)?[build.extension]:[];
@@ -153,7 +153,7 @@ export function bottleIllustration(input={},uid='bottle',options={}) {
   return out+'</g></svg>';
 }
 export function accessoryIllustration(id,uid='acc',options={}) {
-  uid=key(uid);const colors={lid:'#ff4d36',body:'#007f82',base:'#00a66c',handle:'#fff6e2',strap:'#ff4d36',pouch:'#fff6e2',clip:'#2455f5',charm:'#ff4d36',brush:'#007f82',phone:'#ff4d36',brass:'#bc8b3f',snack:'#007f82',snackLid:'#fff6e2',ringloop:'#007f82',boot:'#007f82',sling:'#00a66c',strawkit:'#fff6e2',infuser:'#2455f5',gasket:'#132d66',stickers:'#ff4d36'};
+  uid=key(uid);const colors={lid:'#ff4d36',body:'#007f82',base:'#00a66c',handle:'#fff6e2',strap:'#ff4d36',pouch:'#f6297d',clip:'#2455f5',charm:'#ff4d36',brush:'#007f82',phone:'#8150ea',brass:'#bc8b3f',snack:'#ff4d36',snackLid:'#ffd02f',ringloop:'#171717',boot:'#8150ea',sling:'#f6297d',strawkit:'#ffd02f',infuser:'#007f82',gasket:'#171717',stickers:'#ff4d36'};
   if(Object.hasOwn(colors,id))colors[id]=safeColor(typeof options==='string'?options:options.color,colors[id]);
   let content='';
   if(['boot','sling','strawkit','infuser','gasket','stickers'].includes(id))content=`<ellipse cx="120" cy="265" rx="76" ry="8" fill="#17383c" opacity=".1" filter="url(#${uid}-shadow)"/><g transform="translate(30 72) scale(1.8)">${everydayAccessory(uid,id,colors[id])}</g>`;

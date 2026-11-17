@@ -54,7 +54,7 @@ export const parts = {
 };
 export const MAX_EXTENSIONS = 3;
 export const MAX_MIDDLE_SECTIONS = 3;
-export const defaultAttachmentColors = { strap:'#ff4d36', pouch:'#fff6e2', clip:'#2455f5', charm:'#ff4d36', brush:'#007f82', phone:'#ff4d36', snack:'#007f82', ringloop:'#007f82', boot:'#007f82', sling:'#00a66c', strawkit:'#fff6e2', infuser:'#2455f5', gasket:'#132d66', stickers:'#ff4d36' };
+export const defaultAttachmentColors = { strap:'#ff4d36', pouch:'#f6297d', clip:'#2455f5', charm:'#ff4d36', brush:'#007f82', phone:'#8150ea', snack:'#ff4d36', ringloop:'#171717', boot:'#8150ea', sling:'#f6297d', strawkit:'#ffd02f', infuser:'#007f82', gasket:'#171717', stickers:'#ff4d36' };
 export const middleSectionSizes = [ { id:'short', name:'Short', capacity:150 }, { id:'long', name:'Long', capacity:300 } ];
 export function getExtensions(build) {
   if (Array.isArray(build?.extensions)) return [...build.extensions];

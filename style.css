@@ -64,6 +64,7 @@ html{scroll-padding-top:120px}
 
 .cover-part-map path{stroke-linejoin:round;stroke-linecap:round;transition:fill .18s ease,stroke .18s ease,stroke-width .18s ease}
 .part-tooltip{bottom:auto}
+.hero-benefits article{justify-content:center;text-align:center}
 
 /* One clear assembly journey, with the same card sizes as attachments. */
 .steps-grid,.accessory-grid{grid-template-columns:repeat(3,minmax(0,1fr))}

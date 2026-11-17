@@ -1,5 +1,7 @@
 # Native 4K upgrade audit
 
+Superseded as an active requirement: the user clarified that they want high visual quality using their supplied palette, and do not want an API-key setup. The built-in workflow completed that refresh; see `REFERENCE_PALETTE_PHOTOS.md`. The historical pixel audit below does not block ongoing image work.
+
 35 raster photographs are displayed by the site: 27 catalog parts/accessories, the landing cover, three how-it-works images, the branding blank bottle, and three product portraits. None currently has a native long edge of3840pixels. The live SVG builder and wordmarks are resolution-independent vectors.
 
 Current landing master: `assets/originals/babo-cover-balanced-bases.png`,2172×724. Most catalog/how images are1536×1024; branding/product portraits are1024×1536. Current WebP exports preserve those dimensions.

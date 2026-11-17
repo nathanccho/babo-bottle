@@ -3,6 +3,12 @@ import { koData } from './ko-data.js';
 // Translation is presentation-only: build IDs, selected values, SKUs, prices,
 // uploaded files, and the user's own engraving never become translated state.
 const ui = {
+ 'Six Babo combinations in coral and butter, dusty blue and navy, yellow and seafoam, rose and brick, clay and black, and plum and violet, arranged around a clear center with interchangeable parts and carry accessories.':'코랄과 버터, 더스티 블루와 네이비, 옐로와 시폼, 로즈와 브릭, 클레이와 블랙, 플럼과 바이올렛으로 꾸민 여섯 가지 바보 보틀. 중앙 여백 양옆에 교체형 부품과 액세서리를 배치했어요.',
+ 'Forest, coral, and butter Babo bottle with its sections screwed together':'포레스트, 코랄, 버터 색상의 모듈을 연결한 바보 보틀',
+ 'Blank coral Babo bottle with your engraving preview':'각인 미리보기를 위한 코랄 바보 보틀',
+
+ 'Forest':'포레스트', 'Dusty blue':'더스티 블루', 'Cool grey':'쿨 그레이', 'Brick':'브릭', 'Clay':'클레이', 'Plum':'플럼', 'Ice':'아이스',
+
   'Black':'블랙',
   'Price':'가격', 'total':'합계', 'Subtotal':'소계',
   'Bottles, parts, and accessories.':'보틀, 부품, 액세서리.',

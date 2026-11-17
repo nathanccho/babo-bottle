@@ -1,11 +1,11 @@
-const defaultColors = { lid: '#ff4d36', body: '#ffd02f', extension: '#ffd02f', base: '#007f82', handle: '#ff4d36' };
+const defaultColors = { lid:'#153b35', body:'#f67e68', extension:'#fff6e8', base:'#fbe6a1', handle:'#153b35' };
 export const palettes = [
-  { name: 'Coral', value: '#ff4d36' }, { name: 'Cobalt', value: '#2455f5' },
-  { name: 'Turquoise', value: '#00b8bc' }, { name: 'Yellow', value: '#ffd02f' },
-  { name: 'Grass', value: '#00a66c' }, { name: 'Lime', value: '#bfea32' },
-  { name: 'Pink', value: '#f6297d' }, { name: 'Violet', value: '#8150ea' },
-  { name: 'Orange', value: '#ff851b' }, { name: 'Teal', value: '#007f82' },
-  { name: 'Navy', value: '#132d66' }, { name: 'Cream', value: '#fff6e2' },
+ {name:'Coral',value:'#f67e68'},{name:'Butter',value:'#fbe6a1'},{name:'Forest',value:'#153b35'},
+ {name:'Dusty blue',value:'#99acc6'},{name:'Navy',value:'#07152f'},{name:'Cool grey',value:'#b8c2c3'},
+ {name:'Yellow',value:'#ffe000'},{name:'Seafoam',value:'#b6dcce'},{name:'Teal',value:'#08788e'},
+ {name:'Rose',value:'#ef7092'},{name:'Brick',value:'#85261e'},{name:'Clay',value:'#a36751'},
+ {name:'Sage',value:'#b5cec5'},{name:'Black',value:'#111214'},{name:'Red',value:'#a92c35'},
+ {name:'Violet',value:'#51457f'},{name:'Plum',value:'#501344'},{name:'Ice',value:'#a7cbd4'},
 ];
 export const parts = {
   foundation: [
@@ -54,13 +54,13 @@ export const parts = {
 };
 export const MAX_EXTENSIONS = 3;
 export const MAX_MIDDLE_SECTIONS = 3;
-export const defaultAttachmentColors = { strap:'#ff4d36', pouch:'#f6297d', clip:'#2455f5', charm:'#ff4d36', brush:'#007f82', phone:'#8150ea', snack:'#ff4d36', ringloop:'#171717', boot:'#8150ea', sling:'#f6297d', strawkit:'#ffd02f', infuser:'#007f82', gasket:'#171717', stickers:'#ff4d36' };
+export const defaultAttachmentColors = { strap:'#ef7092', pouch:'#b6dcce', clip:'#51457f', charm:'#a92c35', brush:'#08788e', phone:'#501344', snack:'#85261e', ringloop:'#111214', boot:'#51457f', sling:'#ef7092', strawkit:'#a7cbd4', infuser:'#08788e', gasket:'#111214', stickers:'#f67e68' };
 export const middleSectionSizes = [ { id:'short', name:'Short', capacity:150 }, { id:'long', name:'Long', capacity:300 } ];
 export function getExtensions(build) {
   if (Array.isArray(build?.extensions)) return [...build.extensions];
   return build?.extension && build.extension !== 'none' ? [build.extension] : [];
 }
-export function getExtensionColors(build) { return getExtensions(build).map((_,index) => build?.extensionColors?.[index] || build?.colors?.extension || '#fff6e2'); }
+export function getExtensionColors(build) { return getExtensions(build).map((_,index) => build?.extensionColors?.[index] || build?.colors?.extension || '#fff6e8'); }
 export function setBuildExtensions(build, extensions, colors) {
   const previous = getExtensionColors(build);
   build.extensions = [...extensions];
@@ -75,7 +75,7 @@ export function getMiddleSectionInfo(section) {
   const size = middleSectionSizes.find(size => size.id === section.size) || middleSectionSizes[0];
   return { id:`middle-${body.id}-${size.id}`, type:body.id, size:size.id, name:`${size.name} ${body.name.toLowerCase().replace(' body','')} middle`, price:body.price + (size.id === 'long' ? -1 : -5), capacity:size.capacity, color:section.color };
 }
-export function getAttachmentColor(build, id) { return build?.attachmentColors?.[id] || defaultAttachmentColors[id] || '#007f82'; }
+export function getAttachmentColor(build, id) { return build?.attachmentColors?.[id] || defaultAttachmentColors[id] || '#08788e'; }
 export function cloneBuild(build) {
   const copy = JSON.parse(JSON.stringify(build));
   if (copy && typeof copy === 'object' && !Array.isArray(copy) && copy.foundation && copy.colors) {
@@ -87,10 +87,10 @@ export function cloneBuild(build) {
 }
 function makeBuild(overrides = {}) { return cloneBuild({ foundation: 'core', lid: 'straw', body: 'smooth', extension: 'none', base: 'standard', colors: { ...defaultColors }, attachments: [], ...overrides }); }
 export const presets = [
-  { id: 'coral', name: 'Coral + yellow', description: 'Straw lid, smooth body, short extension.', tag: 'STRAW + CLEAR', build: makeBuild({ extension: 'short', colors: { ...defaultColors, extension: '#fff6e2' } }) },
-  { id: 'alpine', name: 'Teal + turquoise', description: 'Loop lid, ribbed body, carry strap.', tag: 'LOOP + STRAP', build: makeBuild({ lid: 'loop', body: 'textured', base: 'narrow', colors: { lid: '#007f82', body: '#00b8bc', extension: '#00b8bc', base: '#007f82', handle: '#007f82' }, attachments: ['strap'] }) },
-  { id: 'ink', name: 'Navy + cream', description: 'Chug lid, compact handle, long extension.', tag: 'CHUG + HANDLE', build: makeBuild({ lid: 'chug', body: 'handle', extension: 'long', attachments: ['strap'], colors: { lid: '#132d66', body: '#fff6e2', extension: '#fff6e2', base: '#132d66', handle: '#132d66' } }) },
-  { id: 'sage', name: 'Grass + yellow', description: 'Flip lid, smooth body, short extension.', tag: 'FLIP + CLEAR', build: makeBuild({ lid: 'flip', body: 'smooth', extension: 'short', colors: { lid: '#00a66c', body: '#ffd02f', extension: '#00a66c', base: '#00a66c', handle: '#00a66c' } }) },
+ {id:'coral',name:'Coral + butter',description:'Straw lid, smooth body, short extension.',tag:'STRAW + CLEAR',build:makeBuild({extension:'short',colors:{...defaultColors}})},
+ {id:'alpine',name:'Dusty blue + navy',description:'Loop lid, ribbed body, carry strap.',tag:'LOOP + STRAP',build:makeBuild({lid:'loop',body:'textured',base:'narrow',colors:{lid:'#07152f',body:'#99acc6',extension:'#fff6e8',base:'#b8c2c3',handle:'#07152f'},attachments:['strap'],attachmentColors:{strap:'#ef7092'}})},
+ {id:'ink',name:'Clay + black',description:'Chug lid, compact handle, long extension.',tag:'CHUG + HANDLE',build:makeBuild({lid:'chug',body:'handle',extension:'long',attachments:['strap'],attachmentColors:{strap:'#ef7092'},colors:{lid:'#b5cec5',body:'#a36751',extension:'#fff6e8',base:'#111214',handle:'#b5cec5'}})},
+ {id:'sage',name:'Yellow + seafoam',description:'Flip lid, smooth body, short extension.',tag:'FLIP + CLEAR',build:makeBuild({lid:'flip',body:'smooth',extension:'short',colors:{lid:'#08788e',body:'#ffe000',extension:'#fff6e8',base:'#b6dcce',handle:'#08788e'}})},
 ];
 export function getBillOfMaterials(build) {
   const moduleRow = (type, part, suffix = '', customColor) => {
@@ -140,5 +140,5 @@ export function validateBuild(build) {
 for (const preset of presets) preset.price = estimateBuild(preset.build).total;
 export const products = [
   ...presets.map(p => ({ ...p, category: 'Bottles', color: p.build.colors.body })),
-  ...['lid', 'body', 'base', 'extension', 'attachments'].flatMap(type => parts[type].filter(p => p.id !== 'none').map(p => ({ ...p, id: `${type}-${p.id}`, category: ({lid:'Lids',body:'Bodies',base:'Bases',extension:'Extensions',attachments:'Accessories'})[type], partType: type, partId: p.id, color: type === 'attachments' ? defaultAttachmentColors[p.id] : type === 'lid' ? '#ff4d36' : type === 'base' ? '#007f82' : '#ffd02f' }))),
+  ...['lid', 'body', 'base', 'extension', 'attachments'].flatMap(type => parts[type].filter(p => p.id !== 'none').map(p => ({ ...p, id: `${type}-${p.id}`, category: ({lid:'Lids',body:'Bodies',base:'Bases',extension:'Extensions',attachments:'Accessories'})[type], partType: type, partId: p.id, color: type === 'attachments' ? defaultAttachmentColors[p.id] : type === 'lid' ? '#f67e68' : type === 'base' ? '#08788e' : '#fbe6a1' }))),
 ];

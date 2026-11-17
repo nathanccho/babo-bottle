@@ -1,4 +1,4 @@
-const FALLBACK = '#007f82';
+const FALLBACK = '#08788e';
 function safeColor(value,fallback=FALLBACK) { return /^#[\da-f]{3}([\da-f]{3})?$/i.test(value||'') ? value : fallback; }
 function key(value) { return String(value).replace(/[^a-zA-Z0-9_-]/g,'').slice(0,80)||'babo'; }
 function tone(hex,amount) {
@@ -28,14 +28,14 @@ function compactHandle(uid,bodyRight,bodyTop,bodyHeight,color) {
   const path=`M${bodyRight-4} ${top}h11C${bodyRight+reach-5} ${top} ${bodyRight+reach} ${top+5} ${bodyRight+reach} ${top+bend}V${bottom-bend}C${bodyRight+reach} ${bottom-5} ${bodyRight+reach-5} ${bottom} ${bodyRight+7} ${bottom}h-11`;
   return `<path d="${path}" stroke="${tone(color,-.2)}" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><path d="${path}" stroke="url(#${uid}-handle)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>`;
 }
-function attachmentCollar(uid,x,y,width,color='#007f82') {
+function attachmentCollar(uid,x,y,width,color='#08788e') {
   return `<g data-artwork="ringloop"><path d="M${x} ${y}q${width/2} 5 ${width} 0v7q-${width/2} 6 -${width} 0Z" fill="url(#${uid}-ringloop)"/><path d="M${x+1} ${y+1}q${width/2-1} 5 ${width-2} 0" stroke="${tone(color,.35)}" stroke-opacity=".6" stroke-width="1"/><path d="M${x+1} ${y+4}h-5q-7 0-7 7v4q0 7 7 7h5Z" stroke="url(#${uid}-brass)" stroke-width="3" stroke-linejoin="round"/><path d="M${x+width-1} ${y+4}h5q7 0 7 7v4q0 7-7 7h-5Z" stroke="url(#${uid}-brass)" stroke-width="3" stroke-linejoin="round"/><rect x="${x-2}" y="${y+1}" width="5" height="11" rx="2" fill="url(#${uid}-ringloop)"/><rect x="${x+width-3}" y="${y+1}" width="5" height="11" rx="2" fill="url(#${uid}-ringloop)"/></g>`;
 }
-function snackCompartment(uid,x,y,width,height,color='#007f82') {
+function snackCompartment(uid,x,y,width,height,color='#08788e') {
   const capHeight=Math.max(7,height*.17),round=Math.min(12,height*.24),rim=Math.min(6,height*.09);
   return `<g data-artwork="snack"><rect x="${x}" y="${y+capHeight*.55}" width="${width}" height="${height-capHeight*.55}" rx="${round}" fill="url(#${uid}-snack)"/><path d="M${x+2} ${y+height-round*.6}q${width/2-2} ${rim*1.5} ${width-4} 0" stroke="${tone(color,-.3)}" stroke-opacity=".42" stroke-width="1.2"/><path d="M${x} ${y+rim}q${width/2} ${rim*2} ${width} 0v${capHeight}q-${width/2} ${rim*2} -${width} 0Z" fill="url(#${uid}-snackLid)"/><ellipse cx="${x+width/2}" cy="${y+rim}" rx="${width/2}" ry="${rim}" fill="#e3d8c2"/><ellipse cx="${x+width/2}" cy="${y+rim}" rx="${width/2-4}" ry="${Math.max(1,rim-1.2)}" stroke="#c8b999" stroke-width=".8"/>${steel(uid,x+1,y+capHeight+rim,width-2)}<rect x="${x+width-7}" y="${y+capHeight+rim-1}" width="5" height="${Math.max(8,height*.19)}" rx="2" fill="url(#${uid}-steel)"/><text x="${x+width/2}" y="${y+height*.77}" text-anchor="middle" font-family="Arial,sans-serif" font-size="${width*.13}" font-weight="700" letter-spacing="-.5" fill="#f7efdc">babo.</text></g>`;
 }
-function phoneHolder(uid,color='#ff4d36') {
+function phoneHolder(uid,color='#f67e68') {
   return `<path d="M83 44h70q24 0 24 25v104q0 28-26 29H92q-24-1-24-28V71q0-27 15-27Z" fill="${tone(color,-.2)}"/><rect x="69" y="39" width="99" height="156" rx="31" fill="url(#${uid}-phone)"/><rect x="74" y="44" width="88" height="145" rx="27" stroke="${tone(color,.35)}" stroke-opacity=".55" stroke-width="1.5"/><path d="M57 105h19m-19 16h19m87-16h18m-18 16h18" stroke="url(#${uid}-steel)" stroke-width="5"/><rect x="50" y="87" width="25" height="68" rx="12" fill="url(#${uid}-phone)"/><rect x="56" y="93" width="13" height="54" rx="6" fill="#b7a27f"/><path d="M60 97v46m5-46v46" stroke="#ddc8a7" stroke-opacity=".5" stroke-width="1"/><rect x="165" y="89" width="25" height="68" rx="12" fill="url(#${uid}-phone)"/><path d="M169 97v51" stroke="${tone(color,.5)}" stroke-opacity=".45" stroke-width="1.5"/><path d="M79 174h23v20H90q-11 0-11-12Zm56 0h23v8q0 12-11 12h-12Z" fill="url(#${uid}-phone)"/><path d="M85 174h11v9H85m56-9h11v9h-11" stroke="#ceb89a" stroke-width="6" stroke-linejoin="round"/><text x="120" y="128" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" font-weight="700" letter-spacing="-.8" fill="#fff0d8">babo.</text><rect x="105" y="199" width="30" height="27" rx="10" fill="url(#${uid}-phone)"/><circle cx="108" cy="211" r="6" fill="url(#${uid}-steel)"/><path d="M105 208h6" stroke="#576c65" stroke-width="1.5"/><rect x="99" y="223" width="42" height="17" rx="6" fill="url(#${uid}-phone)"/><path d="M101 235h38" stroke="${tone(color,-.3)}" stroke-width="1.2"/><ellipse cx="120" cy="254" rx="18" ry="20" stroke="url(#${uid}-phone)" stroke-width="9"/><path d="M119 269v9" stroke="url(#${uid}-brass)" stroke-width="7" stroke-linecap="round"/><path d="M113 278q-6 0-8 9l-6 20q-3 13 11 16h9q14-2 10-16l-7-21q-3-8-9-8Z" stroke="url(#${uid}-brass)" stroke-width="7"/><path d="m121 288 7 20" stroke="#f1d089" stroke-width="3" stroke-linecap="round"/>`;
 }
 function bodySegment(uid,{x,y,width,height,type,color,handleColor=color,paintKey='body',logoKey='body',handlePrefix=uid}) {
@@ -75,9 +75,9 @@ function everydayAccessory(uid,id,color) {
 export function bottleIllustration(input={},uid='bottle',options={}) {
   uid=key(uid);
   const build={lid:'straw',body:'smooth',extension:'none',base:'standard',foundation:'core',attachments:[],...input};
-  const defaults={strap:'#ff4d36',pouch:'#f6297d',clip:'#2455f5',charm:'#ff4d36',brush:'#007f82',phone:'#8150ea',snack:'#ff4d36',ringloop:'#171717',boot:'#8150ea',sling:'#f6297d',strawkit:'#ffd02f',infuser:'#007f82',gasket:'#171717',stickers:'#ff4d36'};
+  const defaults={strap:'#ef7092',pouch:'#b6dcce',clip:'#51457f',charm:'#a92c35',brush:'#08788e',phone:'#501344',snack:'#85261e',ringloop:'#111214',boot:'#51457f',sling:'#ef7092',strawkit:'#a7cbd4',infuser:'#08788e',gasket:'#111214',stickers:'#f67e68'};
   const attachments=Array.isArray(build.attachments)?build.attachments.filter(id=>Object.hasOwn(defaults,id)):[];
-  const colors={lid:'#ff4d36',body:'#ffd02f',extension:'#ffd02f',base:'#007f82',handle:'#ff4d36',...input.colors,...defaults,brass:'#bc8b3f',snackLid:'#ffd02f'};
+  const colors={lid:'#f67e68',body:'#fbe6a1',extension:'#fbe6a1',base:'#08788e',handle:'#f67e68',...input.colors,...defaults,brass:'#bc8b3f',snackLid:'#fbe6a1'};
   for(const id of Object.keys(defaults))colors[id]=safeColor(build.attachmentColors?.[id],defaults[id]);
   for(const id of Object.keys(colors))colors[id]=safeColor(colors[id]);
   const extensions=Array.isArray(build.extensions)?build.extensions.filter(size=>['short','long'].includes(size)).slice(0,3):['short','long'].includes(build.extension)?[build.extension]:[];
@@ -153,7 +153,7 @@ export function bottleIllustration(input={},uid='bottle',options={}) {
   return out+'</g></svg>';
 }
 export function accessoryIllustration(id,uid='acc',options={}) {
-  uid=key(uid);const colors={lid:'#ff4d36',body:'#007f82',base:'#00a66c',handle:'#fff6e2',strap:'#ff4d36',pouch:'#f6297d',clip:'#2455f5',charm:'#ff4d36',brush:'#007f82',phone:'#8150ea',brass:'#bc8b3f',snack:'#ff4d36',snackLid:'#ffd02f',ringloop:'#171717',boot:'#8150ea',sling:'#f6297d',strawkit:'#ffd02f',infuser:'#007f82',gasket:'#171717',stickers:'#ff4d36'};
+  uid=key(uid);const colors={lid:'#f67e68',body:'#08788e',base:'#153b35',handle:'#fff6e8',strap:'#ef7092',pouch:'#b6dcce',clip:'#51457f',charm:'#a92c35',brush:'#08788e',phone:'#501344',brass:'#bc8b3f',snack:'#85261e',snackLid:'#fbe6a1',ringloop:'#111214',boot:'#51457f',sling:'#ef7092',strawkit:'#a7cbd4',infuser:'#08788e',gasket:'#111214',stickers:'#f67e68'};
   if(Object.hasOwn(colors,id))colors[id]=safeColor(typeof options==='string'?options:options.color,colors[id]);
   let content='';
   if(['boot','sling','strawkit','infuser','gasket','stickers'].includes(id))content=`<ellipse cx="120" cy="265" rx="76" ry="8" fill="#17383c" opacity=".1" filter="url(#${uid}-shadow)"/><g transform="translate(30 72) scale(1.8)">${everydayAccessory(uid,id,colors[id])}</g>`;
@@ -168,7 +168,7 @@ export function accessoryIllustration(id,uid='acc',options={}) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 340" fill="none" aria-hidden="true">${defs(uid,colors)}${content}</svg>`;
 }
 export function stepIllustration(step) {
-  const uid=key('step-'+step),colors={lid:'#ff4d36',body:'#ffd02f',base:'#007f82',handle:'#00a66c'};let content='';
+  const uid=key('step-'+step),colors={lid:'#f67e68',body:'#fbe6a1',base:'#08788e',handle:'#153b35'};let content='';
   if(step==='foundation')content=`<ellipse cx="120" cy="125" rx="49" ry="8" fill="#17383c" opacity=".12"/><path d="M71 69q49 11 98 0l-12 45q-1 8-12 9H95q-11-1-12-9Z" fill="url(#${uid}-base)"/><ellipse cx="120" cy="69" rx="49" ry="9" fill="url(#${uid}-steel)"/><ellipse cx="120" cy="68" rx="42" ry="6" fill="#284b4e"/><path d="M80 82q40 8 80 0" stroke="#fff" stroke-opacity=".2"/>`;
   else if(step==='lid')content=lidMarkup(uid,'straw',73,68,94,colors.lid);
   else if(step==='body')content=`${compactHandle(uid,158,31,104,colors.handle)}<path d="M76 31q41 8 82 0v95q0 8-11 9H87q-11-1-11-9Z" fill="url(#${uid}-body)"/>${steel(uid,76,31,82)}${steel(uid,76,129,82)}<text x="117" y="89" font-family="Arial,sans-serif" font-size="18" font-weight="900" letter-spacing="-1.1" text-anchor="middle" fill="#254448">babo.</text>`;
@@ -176,6 +176,6 @@ export function stepIllustration(step) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" fill="none" aria-hidden="true">${defs(uid,colors)}${content}</svg>`;
 }
 export function cleaningIllustration() {
-  const uid='cleaning-babo';const colors={lid:'#ff4d36',body:'#ffd02f',base:'#007f82',handle:'#007f82'};
+  const uid='cleaning-babo';const colors={lid:'#f67e68',body:'#fbe6a1',base:'#08788e',handle:'#08788e'};
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 390" fill="none" aria-hidden="true">${defs(uid,colors)}<g opacity=".12" fill="#17383c" filter="url(#${uid}-shadow)"><ellipse cx="126" cy="284" rx="64" ry="13"/><ellipse cx="279" cy="301" rx="64" ry="13"/><ellipse cx="427" cy="278" rx="55" ry="13"/><ellipse cx="530" cy="250" rx="48" ry="13"/></g><g transform="translate(25 29) rotate(-12 100 180)">${lidMarkup(uid,'straw',48,175,104,colors.lid)}</g><g transform="translate(193 87) rotate(10 60 120)"><path d="M8 24q51 10 102 0v153q0 12-14 13H22q-14-1-14-13Z" fill="url(#${uid}-body)"/><ellipse cx="59" cy="24" rx="51" ry="9" fill="url(#${uid}-steel)"/><ellipse cx="59" cy="24" rx="44" ry="6" fill="#547774"/><ellipse cx="59" cy="26" rx="41" ry="4" fill="#d6dfd0"/>${steel(uid,8,181,102)}<text x="59" y="119" text-anchor="middle" font-family="Arial,sans-serif" font-weight="900" font-size="23" letter-spacing="-1.4" fill="#244549">babo.</text><path d="M17 42v124" stroke="#fffdf1" stroke-width="3" opacity=".35"/></g><g transform="translate(359 139) rotate(-10 50 70)"><path d="M0 26q50 9 100 0v69q-50 12-100 0Z" fill="url(#${uid}-clear)"/><ellipse cx="50" cy="26" rx="50" ry="9" fill="url(#${uid}-steel)"/><ellipse cx="50" cy="26" rx="44" ry="6" fill="#a7c8bc" fill-opacity=".4"/>${steel(uid,0,93,100)}<path d="M9 40v43" stroke="#fffdf0" stroke-width="4" opacity=".7"/><path d="M67 51h14m-14 12h10m-10 12h14" stroke="#628c82" stroke-width="1.5" opacity=".6"/></g><g transform="translate(475 94) rotate(13 49 90)"><path d="M1 72q49 9 98 0l-10 54q-1 12-13 13H24q-12-1-13-13Z" fill="url(#${uid}-base)"/><ellipse cx="50" cy="72" rx="49" ry="9" fill="url(#${uid}-steel)"/><ellipse cx="50" cy="72" rx="42" ry="6" fill="#25494c"/><path d="M18 128q32 6 64 0" stroke="#064e55" stroke-opacity=".35" stroke-width="2"/></g></svg>`;
 }

@@ -1,0 +1,7 @@
+# Balanced cover bases
+
+Built-in ImageGen precise-object-edit using `assets/originals/babo-cover-red-body.png`. New master: `assets/originals/babo-cover-balanced-bases.png`. Website asset: `public/assets/babo-cover-balanced-bases.webp`, native2172×724, quality92 WebP without upscaling. Yellow bottle base changed to coral; red bottle base changed to black. Live cover builds match. Previous masters retained.
+
+## Exact prompt
+
+Use case: precise-object-edit. Edit this exact Babo six-bottle studio panorama with TWO small color changes only. 1) The first bottle on the far left, yellow body with coral straw lid: change its teal bottom BASE to the same vivid tomato-coral #FF4D36 as its existing lid. 2) The fifth bottle from the left, second from right, red smooth body with teal loop lid: change ONLY its teal bottom BASE to a true rich matte BLACK #171717, with realistic soft edge highlights. Keep its teal lid and red body unchanged. These edits reduce repeated green/teal bases. Preserve ALL other colors and every bottle's exact silhouette, shape, size, placement, slant, exploded gaps, steel necks, glass transparency, accessories, tiny babo logos, realistic powdercoat texture, original shadows and ivory background. No compositional changes whatsoever, interactive hover outlines depend on identical positions. No new props, text or labels. Preserve exact3:1 panoramic framing,2172x724 or higher same framing.

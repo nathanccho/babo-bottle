@@ -1,9 +1,11 @@
-const defaultColors = { lid: '#f36f60', body: '#f6e9ce', extension: '#f6e9ce', base: '#007d87', handle: '#f36f60' };
+const defaultColors = { lid: '#ff4d36', body: '#ffd02f', extension: '#ffd02f', base: '#007f82', handle: '#ff4d36' };
 export const palettes = [
-  { name: 'Coral', value: '#f36f60' }, { name: 'Lagoon', value: '#007d87' },
-  { name: 'Butter', value: '#f6e9ce' }, { name: 'Sage', value: '#a5b5a1' },
-  { name: 'Sky', value: '#a9d4df' }, { name: 'Ink', value: '#253c46' },
-  { name: 'Lilac', value: '#b9a6ce' }, { name: 'Cloud', value: '#eeeae2' },
+  { name: 'Coral', value: '#ff4d36' }, { name: 'Cobalt', value: '#2455f5' },
+  { name: 'Turquoise', value: '#00b8bc' }, { name: 'Yellow', value: '#ffd02f' },
+  { name: 'Grass', value: '#00a66c' }, { name: 'Lime', value: '#bfea32' },
+  { name: 'Pink', value: '#f6297d' }, { name: 'Violet', value: '#8150ea' },
+  { name: 'Orange', value: '#ff851b' }, { name: 'Teal', value: '#007f82' },
+  { name: 'Navy', value: '#132d66' }, { name: 'Cream', value: '#fff6e2' },
 ];
 export const parts = {
   foundation: [
@@ -52,13 +54,13 @@ export const parts = {
 };
 export const MAX_EXTENSIONS = 3;
 export const MAX_MIDDLE_SECTIONS = 3;
-export const defaultAttachmentColors = { strap:'#f36f60', pouch:'#d9cbb0', clip:'#899d98', charm:'#f36f60', brush:'#007d87', phone:'#f36f60', snack:'#007d87', ringloop:'#007d87', boot:'#007d87', sling:'#a5b5a1', strawkit:'#eeeae2', infuser:'#899d98', gasket:'#253c46', stickers:'#f36f60' };
+export const defaultAttachmentColors = { strap:'#ff4d36', pouch:'#fff6e2', clip:'#2455f5', charm:'#ff4d36', brush:'#007f82', phone:'#ff4d36', snack:'#007f82', ringloop:'#007f82', boot:'#007f82', sling:'#00a66c', strawkit:'#fff6e2', infuser:'#2455f5', gasket:'#132d66', stickers:'#ff4d36' };
 export const middleSectionSizes = [ { id:'short', name:'Short', capacity:150 }, { id:'long', name:'Long', capacity:300 } ];
 export function getExtensions(build) {
   if (Array.isArray(build?.extensions)) return [...build.extensions];
   return build?.extension && build.extension !== 'none' ? [build.extension] : [];
 }
-export function getExtensionColors(build) { return getExtensions(build).map((_,index) => build?.extensionColors?.[index] || build?.colors?.extension || '#eeeae2'); }
+export function getExtensionColors(build) { return getExtensions(build).map((_,index) => build?.extensionColors?.[index] || build?.colors?.extension || '#fff6e2'); }
 export function setBuildExtensions(build, extensions, colors) {
   const previous = getExtensionColors(build);
   build.extensions = [...extensions];
@@ -73,7 +75,7 @@ export function getMiddleSectionInfo(section) {
   const size = middleSectionSizes.find(size => size.id === section.size) || middleSectionSizes[0];
   return { id:`middle-${body.id}-${size.id}`, type:body.id, size:size.id, name:`${size.name} ${body.name.toLowerCase().replace(' body','')} middle`, price:body.price + (size.id === 'long' ? -1 : -5), capacity:size.capacity, color:section.color };
 }
-export function getAttachmentColor(build, id) { return build?.attachmentColors?.[id] || defaultAttachmentColors[id] || '#007d87'; }
+export function getAttachmentColor(build, id) { return build?.attachmentColors?.[id] || defaultAttachmentColors[id] || '#007f82'; }
 export function cloneBuild(build) {
   const copy = JSON.parse(JSON.stringify(build));
   if (copy && typeof copy === 'object' && !Array.isArray(copy) && copy.foundation && copy.colors) {
@@ -85,10 +87,10 @@ export function cloneBuild(build) {
 }
 function makeBuild(overrides = {}) { return cloneBuild({ foundation: 'core', lid: 'straw', body: 'smooth', extension: 'none', base: 'standard', colors: { ...defaultColors }, attachments: [], ...overrides }); }
 export const presets = [
-  { id: 'coral', name: 'Coral + cream', description: 'Straw lid, smooth body, short extension.', tag: 'STRAW + CLEAR', build: makeBuild({ extension: 'short', colors: { ...defaultColors, extension: '#eeeae2' } }) },
-  { id: 'alpine', name: 'Ocean + sky', description: 'Loop lid, ribbed body, carry strap.', tag: 'LOOP + STRAP', build: makeBuild({ lid: 'loop', body: 'textured', base: 'narrow', colors: { lid: '#007d87', body: '#a9d4df', extension: '#a9d4df', base: '#007d87', handle: '#007d87' }, attachments: ['strap'] }) },
-  { id: 'ink', name: 'Ink + cream', description: 'Chug lid, compact handle, long extension.', tag: 'CHUG + HANDLE', build: makeBuild({ lid: 'chug', body: 'handle', extension: 'long', attachments: ['strap'], colors: { lid: '#253c46', body: '#eeeae2', extension: '#eeeae2', base: '#253c46', handle: '#253c46' } }) },
-  { id: 'sage', name: 'Seafoam + cream', description: 'Flip lid, smooth body, short extension.', tag: 'FLIP + CLEAR', build: makeBuild({ lid: 'flip', body: 'smooth', extension: 'short', colors: { lid: '#a5b5a1', body: '#f6e9ce', extension: '#a5b5a1', base: '#a5b5a1', handle: '#a5b5a1' } }) },
+  { id: 'coral', name: 'Coral + yellow', description: 'Straw lid, smooth body, short extension.', tag: 'STRAW + CLEAR', build: makeBuild({ extension: 'short', colors: { ...defaultColors, extension: '#fff6e2' } }) },
+  { id: 'alpine', name: 'Teal + turquoise', description: 'Loop lid, ribbed body, carry strap.', tag: 'LOOP + STRAP', build: makeBuild({ lid: 'loop', body: 'textured', base: 'narrow', colors: { lid: '#007f82', body: '#00b8bc', extension: '#00b8bc', base: '#007f82', handle: '#007f82' }, attachments: ['strap'] }) },
+  { id: 'ink', name: 'Navy + cream', description: 'Chug lid, compact handle, long extension.', tag: 'CHUG + HANDLE', build: makeBuild({ lid: 'chug', body: 'handle', extension: 'long', attachments: ['strap'], colors: { lid: '#132d66', body: '#fff6e2', extension: '#fff6e2', base: '#132d66', handle: '#132d66' } }) },
+  { id: 'sage', name: 'Grass + yellow', description: 'Flip lid, smooth body, short extension.', tag: 'FLIP + CLEAR', build: makeBuild({ lid: 'flip', body: 'smooth', extension: 'short', colors: { lid: '#00a66c', body: '#ffd02f', extension: '#00a66c', base: '#00a66c', handle: '#00a66c' } }) },
 ];
 export function getBillOfMaterials(build) {
   const moduleRow = (type, part, suffix = '', customColor) => {
@@ -138,5 +140,5 @@ export function validateBuild(build) {
 for (const preset of presets) preset.price = estimateBuild(preset.build).total;
 export const products = [
   ...presets.map(p => ({ ...p, category: 'Bottles', color: p.build.colors.body })),
-  ...['lid', 'body', 'base', 'extension', 'attachments'].flatMap(type => parts[type].filter(p => p.id !== 'none').map(p => ({ ...p, id: `${type}-${p.id}`, category: ({lid:'Lids',body:'Bodies',base:'Bases',extension:'Extensions',attachments:'Accessories'})[type], partType: type, partId: p.id, color: type === 'attachments' ? defaultAttachmentColors[p.id] : type === 'lid' ? '#f36f60' : type === 'base' ? '#007d87' : '#f6e9ce' }))),
+  ...['lid', 'body', 'base', 'extension', 'attachments'].flatMap(type => parts[type].filter(p => p.id !== 'none').map(p => ({ ...p, id: `${type}-${p.id}`, category: ({lid:'Lids',body:'Bodies',base:'Bases',extension:'Extensions',attachments:'Accessories'})[type], partType: type, partId: p.id, color: type === 'attachments' ? defaultAttachmentColors[p.id] : type === 'lid' ? '#ff4d36' : type === 'base' ? '#007f82' : '#ffd02f' }))),
 ];

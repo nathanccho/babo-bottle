@@ -3,13 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#F7F1E7" />
+    <meta name="theme-color" content="#FFF6E8" />
     <meta name="description" content="Babo is a modular bottle concept. Swap parts, change the size, and preview your own brand." />
-    <title>바보 babo bottle.</title>
+    <title>babo bottle. 바보 보틀</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
   <body>
-    <svg class="brand-symbols" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><symbol id="babo-mark" viewBox="0 0 305 94"><g fill="none" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10v49"/><circle cx="39" cy="59" r="24"/><circle cx="105" cy="59" r="24"/><path d="M129 35v48M153 10v49"/><circle cx="177" cy="59" r="24"/><circle cx="243" cy="59" r="24"/></g><circle cx="289" cy="78" r="8" fill="#319d94"/></symbol></defs></svg>
+    <svg class="brand-symbols" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><symbol id="babo-mark" viewBox="0 0 305 94"><g fill="none" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10v49"/><circle cx="39" cy="59" r="24"/><circle cx="105" cy="59" r="24"/><path d="M129 35v48M153 10v49"/><circle cx="177" cy="59" r="24"/><circle cx="243" cy="59" r="24"/></g><circle cx="289" cy="78" r="8" fill="var(--brand-seafoam)"/></symbol></defs></svg>
     <a class="skip-link" href="#main">Skip to content</a>
     <div class="announcement"><span><span aria-hidden="true">🇰🇷</span> made for you. made by you.</span><a class="announcement-note" href="#branding">Add your brand </a></div>
     <header class="site-header">
@@ -32,9 +32,9 @@
     <main id="main">
       <section class="hero" id="combinations" aria-labelledby="hero-heading">
         <div class="hero-composition">
-        <div class="hero-campaign" id="hero-campaign"><div class="hero-campaign-frame"><img id="hero-cover" src="/assets/babo-cover.webp" width="2172" height="724" alt="Six Babo bottle combinations in coral, navy, sage, rose, teal, and lavender, arranged around a clear center with interchangeable lids, clear extensions, and carry accessories." fetchpriority="high" decoding="async" /><div class="cover-part-layer" id="cover-part-layer"></div></div></div>
+        <div class="hero-campaign" id="hero-campaign"><div class="hero-campaign-frame"><img id="hero-cover" src="/assets/babo-cover-balanced-bases.webp" width="2172" height="724" alt="Six vibrant Babo bottle combinations in coral and yellow, cobalt and turquoise, green and lime, hot pink and cream, red and black, and violet and yellow, arranged around a clear center with interchangeable parts and carry accessories." fetchpriority="high" decoding="async" /><div class="cover-part-layer" id="cover-part-layer"></div></div></div>
         <div class="hero-intro">
-          <p class="hero-origin"><span aria-hidden="true">🇰🇷</span><span lang="ko">바보</span></p>
+          <p class="hero-origin"><span aria-hidden="true">🇰🇷</span><span lang="ko">바보 보틀</span></p>
           <h1 id="hero-heading">babo bottle<span class="heading-period">.</span></h1>
           <p class="hero-slogan">made for you<span class="heading-period">.</span> made by you<span class="heading-period">.</span></p>
           <div class="hero-actions"><a class="button button-dark" href="#make-your-own">Make your own</a></div>
@@ -58,11 +58,11 @@
         </div>
       </section>
       <section class="section accessories-section" id="parts">
-        <div class="section-heading"><div><h2>Make it yours.</h2></div><div class="section-intro"><p>Lids, bodies, bases, and attachments.</p><button class="text-link" data-search>View all parts</button></div></div>
+        <div class="section-heading"><div><h2>Make it yours.</h2></div></div>
         <div class="part-category-filters" id="part-category-filters" role="group" aria-label="Filter bottle parts"></div><div class="accessory-grid part-catalog-grid" id="accessory-products"></div><div class="catalog-expand"><button id="parts-see-all" aria-expanded="false" aria-controls="accessory-products">.. See all</button><span id="parts-visible-count"></span></div><p id="part-filter-status" class="visually-hidden" role="status" aria-live="polite"></p>
       </section>
       <section class="maker-section section" id="make-your-own" aria-labelledby="maker-heading">
-        <div class="section-heading"><div><h2 id="maker-heading">Build it piece by piece.</h2></div><p>Start with a base. Add a body and lid.<br>Then make each part yours.</p></div>
+        <div class="section-heading"><div><h2 id="maker-heading">Build it piece by piece.</h2></div></div>
         <div class="maker-layout maker-workbench">
           <div class="maker-stage">
             <div class="maker-stage-top"><span>Your bottle</span><div class="maker-stage-actions"><button id="maker-preview-size" aria-expanded="false" aria-controls="maker-preview">Expand</button><button id="maker-reset" class="maker-reset">Start over</button></div></div>
@@ -72,8 +72,8 @@
           <div class="maker-controls">
             <nav class="maker-core-tabs" id="maker-core-tabs" aria-label="Main bottle parts"></nav>
             <p class="maker-guidance" id="maker-guidance"></p>
-            <div id="maker-editor" class="maker-editor"></div>
-            <div id="maker-additions" class="maker-additions"></div>
+            <div class="maker-edit-scroll"><div id="maker-editor" class="maker-editor"></div>
+            <div id="maker-additions" class="maker-additions"></div></div>
             <p id="maker-error" class="maker-error" role="alert" hidden></p>
             <div class="maker-summary" role="status" aria-live="polite" aria-atomic="true"><span id="maker-capacity"></span><strong id="maker-price"></strong></div>
             <button class="button button-dark" id="maker-continue" disabled>Review your bottle</button>
@@ -106,8 +106,8 @@
       <section class="closing-section"><p class="eyebrow story-eyebrow"><span class="story-flag" aria-hidden="true">🇰🇷</span><span class="story-korean" lang="ko">바보</span><span>OUR STORY</span></p><h2>Foolishly playful.</h2><p class="closing-description">Babo means “fool” in Korean. We make everyday hydration a little more playful.</p><button class="text-link story-read-more" data-info="story">Read our story</button><a class="button button-dark" href="#make-your-own">Make your own</a></section>
     </main>
     <footer class="site-footer compact-footer">
-      <div class="footer-compact-row"><div class="footer-identity"><a href="#" class="footer-logo" aria-label="Babo home"><svg viewBox="0 0 305 94" aria-hidden="true"><use href="#babo-mark"/></svg></a><p class="footer-pitch">made for you.<br>made by you.</p></div><nav class="footer-compact-links" aria-label="Footer navigation"><a href="#make-your-own">Make your own</a><a href="#parts">Parts</a><button data-info="story">Our story</button><button data-info="faq">FAQs</button><button data-info="care">Care guide</button><button data-info="shipping">Shipping & returns</button><a href="#branding">Your brand</a><button data-cart>Bag</button></nav></div>
-      <div class="footer-bottom"><span>© <span id="current-year">2026</span> Babo.</span><span>Concept storefront · Demo pricing</span><a href="#">Back to top</a></div>
+      <div class="footer-compact-row"><div class="footer-identity"><a href="#" class="footer-logo" aria-label="Babo home"><svg viewBox="0 0 305 94" aria-hidden="true"><use href="#babo-mark"/></svg></a><p class="footer-pitch">made for you. made by you.</p></div><nav class="footer-compact-links" aria-label="Footer navigation"><a href="#make-your-own">Make your own</a><a href="#parts">Parts</a><button data-info="story">Our story</button><button data-info="faq">FAQs</button><button data-info="care">Care guide</button><button data-info="shipping">Shipping & returns</button><a href="#branding">Your brand</a><button data-cart>Bag</button></nav></div>
+      <div class="footer-bottom"><span>© <span id="current-year">2026</span> Babo.</span><span>Concept storefront</span><a href="#">Back to top</a></div>
     </footer>
     <script type="module" src="/app.js"></script>
   </body>

@@ -3,6 +3,20 @@ import { koData } from './ko-data.js';
 // Translation is presentation-only: build IDs, selected values, SKUs, prices,
 // uploaded files, and the user's own engraving never become translated state.
 const ui = {
+  'Black':'블랙',
+  'Price':'가격', 'total':'합계', 'Subtotal':'소계',
+  'Bottles, parts, and accessories.':'보틀, 부품, 액세서리.',
+  'Prices in USD. Shipping, tax, and fulfillment are not available. No products are being sold through this preview.':'가격은 미국 달러 기준이에요. 배송, 세금 계산, 주문 처리는 제공되지 않으며 이 미리보기에서 실제 제품을 판매하지 않아요.',
+  'Choose a size, lid, body, and base. Stack up to 3 short or long extensions, then select colors and attachments. The estimated capacity and total update with each choice.':'크기, 뚜껑, 바디, 베이스를 선택하세요. 확장 모듈을 최대 3개 더하고 색상과 액세서리를 골라 주세요. 선택할 때마다 예상 용량과 합계가 바뀝니다.',
+
+  'Step 1 of 4':'1단계 / 4', 'Step 2 of 4':'2단계 / 4', 'Step 3 of 4':'3단계 / 4', 'Step 4 of 4':'4단계 / 4',
+  'Body compartments':'바디 모듈', 'Main body':'메인 바디',
+  '+ Body compartment':'+ 바디 모듈', '+ Clear compartment':'+ 투명 모듈',
+  'Choose what you need, or review your bottle.':'필요한 액세서리를 고르거나 보틀 구성을 확인해 주세요.',
+  'Choose a type and color.':'종류와 색상을 골라 주세요.',
+
+  'Six vibrant Babo bottle combinations in coral and yellow, cobalt and turquoise, green and lime, hot pink and cream, red and black, and violet and yellow, arranged around a clear center with interchangeable parts and carry accessories.':'코랄과 옐로, 코발트와 터쿼이즈, 그린과 라임, 핫핑크와 크림, 레드와 블랙, 바이올렛과 옐로로 꾸민 여섯 가지 바보 보틀. 교체형 부품과 휴대용 액세서리를 중앙 여백 양옆에 배치했어요.',
+  'Turquoise':'터쿼이즈', 'Grass':'그린', 'Pink':'핑크', 'Violet':'바이올렛',
   'Skip to content':'본문으로 건너뛰기', 'babo bottle':'바보 보틀',
   'made for you':'당신을 위해', 'made by you':'당신의 손으로',
   'made for you. made by you.':'당신을 위해. 당신의 손으로.',
@@ -243,7 +257,7 @@ function translateCore(source,depth=0) {
   if((m=s.match(/^Approx\. (\d+(?:[,.]\d+)*) ml$/i)))return `약 ${m[1]} ml`;
   if((m=s.match(/^Approx\. \+(\d+) ml$/i)))return `약 +${m[1]} ml`;
   if((m=s.match(/^(Core|Mini|Max)\s*·\s*approx\. ([\d,.]+) ml$/i)))return `${({core:'기본',mini:'미니',max:'맥스'})[m[1].toLowerCase()]} · 약 ${m[2]} ml`;
-  if((m=s.match(/^Configuration updated\. Estimated capacity (\d+) milliliters\. (\d+) pieces\. Demo total (\$[\d.,]+)\.$/i)))return `구성을 변경했어요. 예상 용량 ${m[1]} ml. 부품 ${m[2]}개. 데모 합계 ${m[3]}.`;
+  if((m=s.match(/^Configuration updated\. Estimated capacity (\d+) milliliters\. (\d+) pieces\. Total (\$[\d.,]+)\.$/i)))return `구성을 변경했어요. 예상 용량 ${m[1]} ml. 부품 ${m[2]}개. 합계 ${m[3]}.`;
   if((m=s.match(/^(Decrease|Increase) quantity of (.*), current quantity (\d+)$/i)))return `${translateCore(m[2],depth+1)} 수량 ${m[1].toLowerCase()==='decrease'?'줄이기':'늘리기'}, 현재 ${m[3]}개`;
   if((m=s.match(/^Quantity (\d+)$/i)))return `수량 ${m[1]}개`;
   if((m=s.match(/^(.*) selected in the bottle builder below\.$/i)))return `아래 보틀 만들기에서 ${translateCore(m[1],depth+1)} 조합을 선택했어요.`;
@@ -263,7 +277,7 @@ function translateCore(source,depth=0) {
   if((m=s.match(/^A modular bottle with a (.*), (.*), and (.*)\. Customize the parts and colors in the builder\.$/i)))return `${translateCore(m[1],depth+1)}, ${translateCore(m[2],depth+1)}, ${translateCore(m[3],depth+1)}로 구성한 모듈형 보틀이에요. 만들기 화면에서 부품과 색상을 바꿔 보세요.`;
   if((m=s.match(/^A (.+) is one part of a bottle\. Add a compatible foundation, lid, body, and base to complete your assembly\.$/i)))return `${translateCore(m[1],depth+1)}은 보틀을 구성하는 부품이에요. 호환되는 기본 용량, 뚜껑, 바디, 베이스를 더해 완성해 주세요.`;
   if((m=s.match(/^(.*) × (\d+)$/)))return `${translateCore(m[1],depth+1)} × ${m[2]}`;
-  if((m=s.match(/^(\$[\d.,]+) demo total$/i)))return `${m[1]} 데모 합계`;
+  if((m=s.match(/^(\$[\d.,]+) total$/i)))return `${m[1]} 합계`;
   if((m=s.match(/^(?:short|long)(?:, (?:short|long))* extension modules$/i)))return s.replace(/ extension modules$/i,' 확장 모듈').replace(/short/gi,'짧은').replace(/long/gi,'긴');
   if((m=s.match(/^(\d+) middle sections above the main body\.?$/i)))return `메인 바디 위 추가 섹션 ${m[1]}개.`;
   if((m=s.match(/^(\d+) attachments\.?$/i)))return `액세서리 ${m[1]}개.`;

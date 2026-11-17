@@ -238,3 +238,7 @@ h3{letter-spacing:-.025em}
 .part-hit-map a:hover rect,.part-hit-map a:focus-visible rect{fill:#f7f1e712;stroke:#ffffffbb}
 .part-tooltip{position:absolute;z-index:4;transform:translateX(-50%);padding:9px 15px;border-radius:24px;background:#171717;color:#fffaf1;font:600 13px/1.3 var(--font);white-space:nowrap;box-shadow:0 4px 16px #17171726;pointer-events:none}
 .part-tooltip[hidden]{display:none}
+
+/* Keep the footer signature understated. */
+.footer-wordmark{width:180px;max-width:45%;margin:32px 0 24px}
+@media(max-width:640px){.footer-wordmark{width:140px;margin:24px 0 20px}}

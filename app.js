@@ -15,10 +15,6 @@ const coverPresets=[
  {id:'teal',name:'Teal + sand',build:coverBuild({lid:'loop',body:'smooth',extensions:['short'],base:'standard',colors:{lid:'#007d87',body:'#ecd5af',extension:'#eeeae2',base:'#007d87',handle:'#007d87'}})},
  {id:'lavender',name:'Lavender + cream',build:coverBuild({lid:'chug',body:'textured',base:'standard',attachments:['charm'],colors:{lid:'#b9a6ce',body:'#c7b2d6',extension:'#eeeae2',base:'#f6e9ce',handle:'#b9a6ce'}})}
 ];
-let activeCover='coral';
-function renderCoverChips(){document.querySelector('.hero-presets').innerHTML=coverPresets.map(p=>`<button class="hero-preset" data-cover-preset="${p.id}" aria-pressed="${p.id===activeCover}"><span class="color-pair" aria-hidden="true"><i style="background:${p.build.colors.lid}"></i><i style="background:${p.build.colors.body}"></i></span>${safe(p.name)}</button>`).join('');}
-renderCoverChips();
-
 const coverRegions=[["coral","Straw lid","147,143 159,109 217,99 272,58 315,75 285,148 305,174 295,222 140,201"],["coral","Smooth body","132,229 297,254 269,476 97,452"],["coral","Short extension","98,483 257,508 244,575 85,550"],["coral","Base","82,576 240,601 230,660 71,635"],["navy","Loop lid","394,171 407,119 437,86 478,73 526,86 554,121 560,171 549,221 394,196"],["navy","Ribbed body","381,238 544,263 497,558 325,531"],["navy","Base","320,572 488,596 478,662 307,637"],["sage","Chug lid","631,132 686,131 693,78 748,88 744,129 796,115 813,132 814,157 792,174 783,203 627,178"],["sage","Smooth body","612,220 776,246 738,489 571,463"],["sage","Short extension","570,489 729,513 718,577 558,554"],["sage","Base","555,585 718,610 706,667 545,643"],["rose","Straw lid","1409,134 1423,104 1480,95 1554,49 1579,63 1547,142 1566,162 1555,211 1398,187"],["rose","Smooth body","1387,225 1553,251 1525,433 1357,407"],["rose","Long extension","1357,440 1514,465 1488,593 1330,570"],["rose","Base","1327,592 1488,617 1478,669 1318,646"],["rose","Carry strap","1550,219 1580,253 1600,518 1580,588 1544,589 1526,562 1548,270"],["rose","Pouch","1361,302 1548,326 1532,417 1346,395"],["rose","Flower charm","1492,365 1532,372 1554,405 1531,435 1495,424 1482,394"],["teal","Loop lid","1668,171 1678,123 1711,88 1753,75 1797,88 1826,123 1835,174 1824,224 1666,198"],["teal","Smooth body","1657,238 1810,261 1780,498 1618,475"],["teal","Short extension","1620,502 1777,526 1764,583 1606,560"],["teal","Base","1604,591 1761,615 1750,668 1592,644"],["lavender","Chug lid","1911,132 1962,132 1971,80 2026,91 2022,132 2074,117 2089,133 2091,156 2068,175 2059,203 1903,179"],["lavender","Ribbed body","1886,227 2051,253 2002,559 1839,534"],["lavender","Base","1836,570 2002,595 1990,664 1821,639"],["lavender","Bead charm","2041,252 2078,256 2093,286 2094,368 2074,394 2052,377 2049,301"]];
 const partLayer=document.querySelector('#cover-part-layer');
 partLayer.innerHTML=`<svg class="cover-part-map" viewBox="0 0 2172 724" preserveAspectRatio="none" aria-label="Explore bottle parts">${coverRegions.map(([id,name,points])=>`<a href="#make-your-own" data-cover-part="${id}" data-part-name="${name}" aria-label="${name}, ${safe(coverPresets.find(p=>p.id===id).name)}. Customize this bottle." aria-describedby="cover-part-tooltip"><polygon points="${points}"/></a>`).join('')}</svg>`;
@@ -31,7 +27,7 @@ partLayer.querySelectorAll('[data-cover-part]').forEach(link=>{
 partLayer.addEventListener('pointerleave',()=>{partTooltip.hidden=true;});
 function selectCover(id,scrollPhoto=true){
  const index=coverPresets.findIndex(p=>p.id===id);const preset=coverPresets[index];if(!preset)return;
- activeCover=preset.id;Object.assign(makerBuild,cloneBuild(preset.build));renderMaker();renderCoverChips();
+ Object.assign(makerBuild,cloneBuild(preset.build));renderMaker();
  if(scrollPhoto){const campaign=document.querySelector('#hero-campaign');const center=[.09,.205,.315,.67,.79,.91][index]*campaign.scrollWidth;campaign.scrollTo({left:Math.max(0,center-campaign.clientWidth/2),behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});}
  document.querySelector('#cover-selection-status').textContent=`${preset.name} selected in the bottle builder below.`;
 }
@@ -54,7 +50,6 @@ menuToggle.addEventListener('click',()=>{const open=menuToggle.getAttribute('ari
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();});
 document.addEventListener('click',e=>{
  const part=e.target.closest('[data-cover-part]');if(part){e.preventDefault();partTooltip.hidden=true;selectCover(part.dataset.coverPart,false);const heading=document.querySelector('#maker-heading');heading.tabIndex=-1;document.querySelector('#make-your-own').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});heading.focus({preventScroll:true});return;}
- const cover=e.target.closest('[data-cover-preset]');if(cover){selectCover(cover.dataset.coverPreset);document.querySelector(`[data-cover-preset="${cover.dataset.coverPreset}"]`)?.focus({preventScroll:true});return;}
  const build=e.target.closest('[data-build]');if(build){e.preventDefault();openBuilder(build.dataset.build);closeMenu();return;}
  if(e.target.closest('[data-cart]')){openCart();return;}
  const product=e.target.closest('[data-product]');if(product){openProduct(product.dataset.product);return;}

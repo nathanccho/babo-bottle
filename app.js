@@ -1,21 +1,23 @@
 import './style.css';
 import './configurator.css';
-import { presets, products, cloneBuild, estimateBuild, validateBuild, getExtensions, parts } from './data.js';
+import { initI18n } from './i18n.js';
+import { presets, products, cloneBuild, estimateBuild, validateBuild, getExtensions, getExtensionColors, setBuildExtensions, getMiddleSections, setMiddleSections, getMiddleSectionInfo, getAttachmentColor, palettes, parts } from './data.js';
 import { initCommerce, openBuilder, openCart, openProduct, openSearch, openInfo } from './configurator.js';
 import { bottleIllustration } from './illustrations.js';
+import { previewLayout } from './preview-layout.js';
 
 const money = value => `$${Number(value).toFixed(0)}`;
 const safe = str => String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function coverBuild(overrides){return cloneBuild({...presets[0].build,extension:'none',extensions:[],attachments:[],...overrides});}
 const coverPresets=[
  {id:'coral',name:'Coral + cream',build:coverBuild({foundation:'core',lid:'straw',body:'smooth',extensions:['short'],base:'standard',colors:{lid:'#f36f60',body:'#f6e9ce',extension:'#eeeae2',base:'#007d87',handle:'#f36f60'}})},
- {id:'navy',name:'Navy + blue',build:coverBuild({lid:'loop',body:'textured',extensions:['short'],base:'standard',colors:{lid:'#233c61',body:'#7fa1c1',extension:'#eeeae2',base:'#a4d5cd',handle:'#233c61'}})},
- {id:'sage',name:'Sage + mint',build:coverBuild({lid:'chug',body:'smooth',extensions:['short'],base:'standard',colors:{lid:'#a1b18d',body:'#cadbc0',extension:'#eeeae2',base:'#ead7b0',handle:'#a1b18d'}})},
+ {id:'navy',name:'Navy + blue',build:coverBuild({lid:'loop',body:'textured',middleSections:[{type:'smooth',size:'short',color:'#a4d5cd'}],extensions:[],base:'standard',colors:{lid:'#233c61',body:'#7fa1c1',extension:'#eeeae2',base:'#a4d5cd',handle:'#233c61'}})},
+ {id:'sage',name:'Sage + mint',build:coverBuild({lid:'chug',body:'smooth',extensions:[],base:'standard',colors:{lid:'#a1b18d',body:'#cadbc0',extension:'#eeeae2',base:'#ead7b0',handle:'#a1b18d'}})},
  {id:'rose',name:'Rose + cream',build:coverBuild({lid:'straw',body:'smooth',extensions:['long'],base:'standard',attachments:['pouch','charm','strap'],colors:{lid:'#c97978',body:'#f6e9ce',extension:'#eeeae2',base:'#c97978',handle:'#bd8686'}})},
- {id:'teal',name:'Teal + sand',build:coverBuild({lid:'loop',body:'smooth',extensions:['short'],base:'standard',colors:{lid:'#007d87',body:'#ecd5af',extension:'#eeeae2',base:'#007d87',handle:'#007d87'}})},
- {id:'lavender',name:'Lavender + cream',build:coverBuild({lid:'chug',body:'textured',extensions:['short'],base:'standard',attachments:['charm'],colors:{lid:'#b9a6ce',body:'#c7b2d6',extension:'#eeeae2',base:'#f6e9ce',handle:'#b9a6ce'}})}
+ {id:'teal',name:'Teal + sand',build:coverBuild({lid:'loop',body:'smooth',extensions:[],base:'standard',colors:{lid:'#007d87',body:'#ecd5af',extension:'#eeeae2',base:'#007d87',handle:'#007d87'}})},
+ {id:'lavender',name:'Lavender + cream',build:coverBuild({lid:'chug',body:'textured',middleSections:[{type:'smooth',size:'short',color:'#f6e9ce'}],extensions:[],base:'standard',attachments:['charm'],colors:{lid:'#b9a6ce',body:'#c7b2d6',extension:'#eeeae2',base:'#f6e9ce',handle:'#b9a6ce'}})}
 ];
-const coverRegions=[["coral","Straw lid","164,122 170,102 194,88 229,87 254,96 283,49 309,57 285,122 301,144 295,185 282,192 256,197 214,193 177,185 158,176 153,173 155,144"],["coral","Smooth body","159,215 219,218 271,229 268,244 278,249 285,266 260,438 248,448 224,455 181,454 137,445 116,439 110,431 110,416 138,250 147,239 158,238"],["coral","Short extension","119,475 172,479 237,490 236,504 244,507 236,559 226,571 200,576 168,572 127,565 110,558 101,549 107,506 112,490"],["coral","Base","99,584 154,588 225,601 225,612 234,618 229,649 218,667 202,674 134,673 101,660 84,645 87,615 91,600 99,599"],["navy","Loop lid","400,145 409,112 431,84 458,69 492,65 525,79 546,104 553,137 552,171 541,190 527,197 503,200 461,196 419,187 403,178 394,162"],["navy","Ribbed body","407,215 466,217 522,228 520,245 529,251 534,268 499,478 487,486 467,492 440,491 391,482 358,476 346,468 344,459 378,251 391,238 407,238"],["navy","Short extension","354,513 411,517 476,530 475,541 481,545 471,579 458,588 431,592 403,589 367,581 349,575 341,566 347,535 351,526"],["navy","Base","343,595 411,599 472,611 470,624 478,630 472,657 461,674 444,680 372,680 340,669 324,653 327,622 331,610 342,608"],["sage","Chug lid","643,115 682,113 691,73 741,81 741,111 777,102 798,105 813,121 812,143 798,155 777,159 770,179 755,189 731,194 687,188 653,179 637,167 636,163 638,139"],["sage","Smooth body","638,211 696,214 752,225 750,239 759,247 764,264 736,448 723,461 700,470 671,469 632,461 603,453 589,442 587,425 613,248 625,233 638,233"],["sage","Short extension","594,481 654,485 715,497 714,511 723,514 714,558 701,574 674,581 646,577 607,569 588,560 579,551 586,511 591,500"],["sage","Base","580,589 644,593 709,605 708,620 717,625 711,655 701,673 684,680 617,678 580,666 562,650 566,621 572,605 581,605"],["rose","Straw lid","1425,120 1437,98 1462,86 1492,84 1522,95 1553,45 1576,55 1550,121 1565,141 1557,181 1544,190 1518,195 1474,190 1438,182 1420,173 1413,167 1416,142"],["rose","Smooth body","1417,208 1471,213 1528,224 1527,239 1538,246 1545,262 1518,406 1505,419 1481,427 1453,425 1415,418 1382,411 1367,401 1361,379 1390,241 1401,229 1417,230"],["rose","Long extension","1372,433 1435,438 1497,450 1496,465 1507,469 1488,570 1474,581 1447,586 1419,581 1376,574 1356,568 1346,560 1361,463 1367,449"],["rose","Base","1344,593 1403,597 1484,610 1481,624 1491,630 1484,658 1470,676 1453,682 1390,678 1346,665 1328,649 1333,619 1338,606 1345,607"],["rose","Carry strap","1539,216 1554,219 1565,242 1560,256 1576,271 1584,312 1594,399 1596,465 1590,515 1574,549 1552,557 1533,548 1528,530 1534,490 1542,443 1550,383 1551,330 1544,284 1536,273 1533,255 1529,239"],["rose","Pouch","1375,292 1537,315 1544,330 1533,385 1522,406 1384,393 1365,383 1359,366 1367,315"],["rose","Flower charm","1497,346 1521,349 1541,364 1546,384 1538,400 1524,411 1504,409 1488,398 1483,381 1485,363"],["teal","Loop lid","1674,145 1684,112 1708,86 1738,72 1771,69 1800,81 1820,107 1828,137 1827,174 1816,189 1802,197 1776,201 1732,197 1699,188 1682,179 1670,161"],["teal","Smooth body","1687,216 1741,219 1794,231 1792,246 1803,253 1808,270 1777,455 1764,467 1740,476 1710,473 1671,466 1645,457 1630,447 1630,430 1659,252 1671,239 1687,239"],["teal","Short extension","1641,490 1695,495 1757,508 1756,523 1763,526 1755,565 1741,579 1717,585 1686,582 1646,573 1632,567 1623,561 1630,520 1637,506"],["teal","Base","1628,594 1686,598 1753,612 1752,626 1760,632 1753,657 1740,676 1723,683 1654,679 1625,667 1606,652 1611,622 1619,607 1629,608"],["lavender","Chug lid","1919,119 1961,116 1970,74 2025,83 2024,117 2060,106 2081,111 2095,128 2092,148 2078,161 2059,166 2051,184 2037,192 2012,196 1971,189 1938,181 1922,173 1915,167 1915,141"],["lavender","Ribbed body","1922,215 1975,219 2038,230 2036,245 2045,252 2051,268 2017,487 2003,496 1980,502 1947,497 1903,490 1878,482 1866,474 1865,461 1899,251 1911,238 1922,239"],["lavender","Short extension","1881,518 1936,522 1999,535 1998,548 2005,552 1999,582 1986,591 1960,597 1933,592 1892,585 1874,580 1863,573 1870,546 1877,531"],["lavender","Base","1860,603 1923,607 1996,620 1994,635 2002,641 1995,662 1981,679 1964,685 1899,680 1865,668 1846,653 1851,626 1857,614 1861,615"],["lavender","Bead charm","2037,230 2057,239 2066,261 2077,279 2088,293 2094,316 2089,335 2091,355 2084,376 2071,386 2059,375 2058,355 2059,337 2050,322 2054,302 2059,290 2046,265 2034,250"]];
+const coverRegions=[["coral","Straw lid","164,122 170,102 194,88 229,87 254,96 283,49 309,57 285,122 301,144 295,185 282,192 256,197 214,193 177,185 158,176 153,173 155,144"],["coral","Smooth body","159,215 219,218 271,229 268,244 278,249 285,266 260,438 248,448 224,455 181,454 137,445 116,439 110,431 110,416 138,250 147,239 158,238"],["coral","Short extension","119,475 172,479 237,490 236,504 244,507 236,559 226,571 200,576 168,572 127,565 110,558 101,549 107,506 112,490"],["coral","Base","99,584 154,588 225,601 225,612 234,618 229,649 218,667 202,674 134,673 101,660 84,645 87,615 91,600 99,599"],["navy","Loop lid","397,184 409,150 430,123 458,110 492,108 523,120 540,143 545,173 542,209 531,222 518,234 494,239 452,233 415,224 398,215 390,200"],["navy","Short smooth body section","406,248 458,251 516,263 515,276 524,284 525,294 515,327 503,337 479,341 436,334 402,327 388,318 385,306 392,280 402,270 406,270"],["navy","Ribbed body","402,345 457,348 514,358 512,374 523,381 529,397 497,585 485,597 464,605 437,603 389,595 357,590 343,581 342,565 373,384 386,370 401,368"],["navy","Base","349,602 406,606 482,619 480,632 489,639 481,663 468,678 448,685 380,683 349,673 333,656 336,629 342,615 350,616"],["sage","Chug lid","637,260 667,258 679,213 728,218 726,248 758,239 781,244 792,259 788,280 772,293 764,294 759,316 745,327 720,333 680,326 645,319 628,308 626,291"],["sage","Smooth body","635,348 688,352 745,363 743,378 753,386 758,402 732,584 719,596 697,604 668,601 628,594 594,588 580,577 580,561 610,386 622,372 635,371"],["sage","Base","585,602 640,606 716,618 714,632 723,638 717,664 704,679 685,686 620,684 589,673 573,657 576,629 582,615 586,616"],["rose","Straw lid","1425,120 1437,98 1462,86 1492,84 1522,95 1553,45 1576,55 1550,121 1565,141 1557,181 1544,190 1518,195 1474,190 1438,182 1420,173 1413,167 1416,142"],["rose","Smooth body","1417,208 1471,213 1528,224 1527,239 1538,246 1545,262 1518,406 1505,419 1481,427 1453,425 1415,418 1382,411 1367,401 1361,379 1390,241 1401,229 1417,230"],["rose","Long extension","1372,433 1435,438 1497,450 1496,465 1507,469 1488,570 1474,581 1447,586 1419,581 1376,574 1356,568 1346,560 1361,463 1367,449"],["rose","Base","1344,593 1403,597 1484,610 1481,624 1491,630 1484,658 1470,676 1453,682 1390,678 1346,665 1328,649 1333,619 1338,606 1345,607"],["rose","Carry strap","1539,216 1554,219 1565,242 1560,256 1576,271 1584,312 1594,399 1596,465 1590,515 1574,549 1552,557 1533,548 1528,530 1534,490 1542,443 1550,383 1551,330 1544,284 1536,273 1533,255 1529,239"],["rose","Pouch","1375,292 1537,315 1544,330 1533,385 1522,406 1384,393 1365,383 1359,366 1367,315"],["rose","Flower charm","1497,346 1521,349 1541,364 1546,384 1538,400 1524,411 1504,409 1488,398 1483,381 1485,363"],["teal","Loop lid","1669,282 1680,248 1704,224 1735,211 1768,209 1796,221 1814,245 1820,278 1818,313 1804,328 1787,337 1762,341 1721,334 1689,326 1673,317 1663,302"],["teal","Smooth body","1682,348 1734,351 1791,363 1789,379 1800,386 1805,402 1776,586 1762,597 1738,605 1708,603 1668,595 1642,588 1627,578 1626,563 1657,386 1670,373 1682,372"],["teal","Base","1631,603 1686,607 1754,620 1752,633 1761,640 1754,665 1741,679 1723,686 1654,683 1624,671 1608,656 1612,630 1620,616 1631,616"],["lavender","Chug lid","1919,161 1954,157 1962,116 2018,123 2016,156 2052,145 2072,149 2087,163 2085,184 2071,196 2055,201 2050,222 2035,231 2010,236 1971,230 1936,222 1919,213 1908,197 1910,178"],["lavender","Short smooth body section","1923,249 1973,253 2038,264 2037,277 2047,284 2052,296 2044,327 2032,337 2007,341 1963,334 1928,328 1912,319 1903,307 1911,281 1922,271 1923,271"],["lavender","Ribbed body","1911,346 1970,351 2034,362 2032,378 2043,385 2047,402 2020,587 2005,599 1982,608 1948,605 1905,598 1880,592 1864,581 1863,564 1891,386 1901,373 1912,372"],["lavender","Base","1867,607 1924,611 2004,625 2002,637 2010,645 2003,667 1989,681 1970,688 1904,683 1871,672 1854,657 1859,632 1864,620 1868,620"],["lavender","Bead charm","2031,363 2052,373 2062,396 2072,411 2084,426 2090,449 2085,467 2087,488 2080,507 2068,518 2056,507 2054,488 2057,468 2046,453 2050,433 2056,420 2042,396 2030,381"]];
 function roundedRegion(points,radius=10){
  const vertices=points.split(/\s+/).map(pair=>pair.split(',').map(Number));
  const corners=vertices.map((point,index)=>{const prev=vertices[(index+vertices.length-1)%vertices.length],next=vertices[(index+1)%vertices.length];const before=Math.hypot(prev[0]-point[0],prev[1]-point[1]),after=Math.hypot(next[0]-point[0],next[1]-point[1]);const r=Math.min(radius,before/3,after/3);return {point,start:[point[0]+(prev[0]-point[0])*r/before,point[1]+(prev[1]-point[1])*r/before],end:[point[0]+(next[0]-point[0])*r/after,point[1]+(next[1]-point[1])*r/after]};});
@@ -29,11 +31,17 @@ function hideCoverPart(){partTooltip.hidden=true;activePartLink=null;}
 function positionCoverTooltip(){
  if(!activePartLink||partTooltip.hidden)return;
  const composition=document.querySelector('.hero-composition').getBoundingClientRect(),campaign=document.querySelector('#hero-campaign').getBoundingClientRect(),target=activePartLink.getBoundingClientRect(),label=partTooltip.getBoundingClientRect();
+ const header=document.querySelector('.site-header');
+ const headerPosition=header?getComputedStyle(header).position:'';
+ const headerBottom=header&&['fixed','sticky'].includes(headerPosition)?Math.max(0,header.getBoundingClientRect().bottom):0;
+ const visibleTop=Math.max(campaign.top,headerBottom,0)+8,visibleBottom=Math.min(campaign.bottom,window.innerHeight)-8;
+ if(visibleBottom-visibleTop<label.height){partTooltip.style.visibility='hidden';return;}
+ partTooltip.style.visibility='';
  const left=Math.max(campaign.left,0)+label.width/2+10,right=Math.min(campaign.right,window.innerWidth)-label.width/2-10;
  const x=Math.max(left,Math.min(right,target.left+target.width/2));
- let y=target.top-11,below=y-label.height<campaign.top+8;
- if(below)y=Math.min(target.bottom+11,campaign.bottom-label.height-8);
- partTooltip.style.left=`${x-composition.left}px`;partTooltip.style.top=`${y-composition.top}px`;partTooltip.style.bottom='auto';partTooltip.style.transform=below?'translate(-50%,0)':'translate(-50%,-100%)';
+ const above=target.top-11-label.height,below=target.bottom+11;
+ let y=above>=visibleTop?above:below+label.height<=visibleBottom?below:Math.max(visibleTop,Math.min(visibleBottom-label.height,above));
+ partTooltip.style.left=`${x-composition.left}px`;partTooltip.style.top=`${y-composition.top}px`;partTooltip.style.bottom='auto';partTooltip.style.transform='translateX(-50%)';
 }
 function showCoverPart(link){activePartLink=link;partTooltip.textContent=link.dataset.partName;partTooltip.hidden=false;positionCoverTooltip();}
 partLayer.querySelectorAll('[data-cover-part]').forEach(link=>{
@@ -41,19 +49,39 @@ partLayer.querySelectorAll('[data-cover-part]').forEach(link=>{
  link.addEventListener('keydown',e=>{if(e.key==='Escape')hideCoverPart();if(e.key===' '){e.preventDefault();link.click();}});
 });
 partLayer.addEventListener('pointerleave',()=>{if(!partLayer.contains(document.activeElement))hideCoverPart();});
-document.querySelector('#hero-campaign').addEventListener('scroll',positionCoverTooltip,{passive:true});window.addEventListener('resize',positionCoverTooltip);document.querySelector('#hero-cover').addEventListener('load',positionCoverTooltip);
+document.querySelector('#hero-campaign').addEventListener('scroll',positionCoverTooltip,{passive:true});window.addEventListener('resize',positionCoverTooltip);window.addEventListener('scroll',positionCoverTooltip,{passive:true});document.querySelector('#hero-cover').addEventListener('load',positionCoverTooltip);
 function selectCover(id,scrollPhoto=true){
  const index=coverPresets.findIndex(p=>p.id===id);const preset=coverPresets[index];if(!preset)return;
- Object.assign(makerBuild,cloneBuild(preset.build));renderMaker();
+ Object.keys(makerBuild).forEach(key=>delete makerBuild[key]);Object.assign(makerBuild,cloneBuild(preset.build));makerPlaced=new Set(['base','body','lid']);makerActive='body';renderMaker();
  if(scrollPhoto){const campaign=document.querySelector('#hero-campaign');const center=[.09,.205,.315,.67,.79,.91][index]*campaign.scrollWidth;campaign.scrollTo({left:Math.max(0,center-campaign.clientWidth/2),behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});}
  document.querySelector('#cover-selection-status').textContent=`${preset.name} selected in the bottle builder below.`;
 }
 
-const accessoryIds=['strap','pouch','clip','charm','phone','brush','snack','ringloop'];
-document.querySelector('#accessory-products').innerHTML=accessoryIds.map(id=>products.find(p=>p.partType==='attachments'&&p.partId===id)).filter(Boolean).map(p=>`<article class="accessory-card"><button class="accessory-visual" data-product="${safe(p.id)}" aria-label="View ${safe(p.name)}"><img src="/assets/attachment-${p.partId}.webp" width="1024" height="1536" alt="${safe(p.name)} accessory concept" loading="lazy" decoding="async" /></button><div class="accessory-bottom"><div><h3>${safe(p.name)}</h3><p>${money(p.price)} · Concept accessory</p></div><button data-product="${safe(p.id)}">Details</button></div></article>`).join('');
+const catalogCategories=[['all','All'],['lid','Lids'],['body','Bodies'],['extension','Extensions'],['base','Bases'],['attachments','Attachments']];
+const catalogProducts=products.filter(p=>['lid','body','extension','base','attachments'].includes(p.partType));
+let catalogCategory='all';
+let catalogExpanded=false;
+const catalogPreviewIds=['lid-straw','body-textured','attachments-boot','extension-short','base-standard','lid-chug','body-clear','attachments-sling','extension-long','base-storage','lid-loop','body-handle','attachments-charm','attachments-snack','attachments-ringloop'];
+function catalogPreviewItems(){
+ const chosen=catalogPreviewIds.map(id=>catalogProducts.find(p=>p.id===id)).filter(Boolean);
+ const groups=catalogCategories.filter(([id])=>id!=='all').map(([id])=>catalogProducts.filter(p=>p.partType===id));
+ for(let offset=0;chosen.length<15&&groups.some(group=>group[offset]);offset++)for(const group of groups){const item=group[offset];if(item&&!chosen.some(p=>p.id===item.id)&&chosen.length<15)chosen.push(item);}
+ return chosen;
+}
+function renderPartCatalog(){
+ document.querySelector('#part-category-filters').innerHTML=catalogCategories.map(([id,label])=>`<button data-part-filter="${id}" aria-pressed="${catalogCategory===id}">${label}</button>`).join('');
+ const matches=catalogProducts.filter(p=>catalogCategory==='all'||p.partType===catalogCategory);
+ const items=catalogCategory==='all'&&!catalogExpanded?catalogPreviewItems():matches;
+ document.querySelector('#accessory-products').innerHTML=items.map(p=>`<article class="accessory-card"><button class="accessory-visual" data-product="${safe(p.id)}" aria-label="View ${safe(p.name)}"><img src="/assets/${p.partType==='attachments'?'attachment-'+p.partId:'part-'+p.partType+'-'+p.partId}.webp" width="1536" height="1024" alt="${safe(p.name)} concept" loading="lazy" decoding="async" /></button><div class="accessory-bottom"><div><h3><button data-product="${safe(p.id)}">${safe(p.name)}</button></h3><p>${money(p.price)} · Demo price</p></div></div></article>`).join('');
+ const toggle=document.querySelector('#parts-see-all');toggle.hidden=catalogCategory!=='all'||catalogProducts.length<=15;toggle.setAttribute('aria-expanded',String(catalogExpanded));toggle.textContent=catalogExpanded?'Show less':'.. See all';
+ document.querySelector('#parts-visible-count').textContent=catalogCategory==='all'?`${items.length} of ${catalogProducts.length} parts`:`${items.length} parts`;
+ document.querySelector('#part-filter-status').textContent=`${items.length} parts shown.`;
+}
+renderPartCatalog();
+document.querySelector('#parts-see-all').addEventListener('click',()=>{catalogExpanded=!catalogExpanded;renderPartCatalog();});
 
 function colorHeadingPeriods(root=document){
- for(const heading of root.querySelectorAll('h1,h2,h3,.hero-slogan')){
+ for(const heading of root.querySelectorAll('h1,h2,h3,.hero-slogan,.footer-pitch')){
   const walker=document.createTreeWalker(heading,NodeFilter.SHOW_TEXT,{acceptNode:node=>node.parentElement.closest('.heading-period,.brand-period')?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT});
   const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
   for(const node of nodes){if(!node.textContent.includes('.'))continue;const fragments=node.textContent.split('.');const replacement=document.createDocumentFragment();fragments.forEach((text,i)=>{replacement.append(document.createTextNode(text));if(i<fragments.length-1){const period=document.createElement('span');period.className='heading-period';period.textContent='.';replacement.append(period);}});node.replaceWith(replacement);}
@@ -64,8 +92,12 @@ colorHeadingPeriods();
 const menuToggle=document.querySelector('.menu-toggle');
 function closeMenu(){document.querySelector('.main-nav').classList.remove('open');menuToggle.setAttribute('aria-expanded','false');menuToggle.setAttribute('aria-label','Open menu');}
 menuToggle.addEventListener('click',()=>{const open=menuToggle.getAttribute('aria-expanded')!=='true';document.querySelector('.main-nav').classList.toggle('open',open);menuToggle.setAttribute('aria-expanded',String(open));menuToggle.setAttribute('aria-label',open?'Close menu':'Open menu');});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&menuToggle.getAttribute('aria-expanded')==='true'){closeMenu();menuToggle.focus();}});
+matchMedia('(min-width:641px)').addEventListener('change',event=>{if(event.matches)closeMenu();});
 document.addEventListener('click',e=>{
+ if(!e.target.closest('.main-nav,.menu-toggle'))closeMenu();
+ if(e.target.closest('a[href="#branding"]'))document.querySelector('#branding').open=true;
+ const filter=e.target.closest('[data-part-filter]');if(filter){catalogCategory=filter.dataset.partFilter;catalogExpanded=false;renderPartCatalog();document.querySelector(`[data-part-filter="${catalogCategory}"]`)?.focus({preventScroll:true});return;}
  const part=e.target.closest('[data-cover-part]');if(part){e.preventDefault();hideCoverPart();selectCover(part.dataset.coverPart,false);const heading=document.querySelector('#maker-heading');heading.tabIndex=-1;document.querySelector('#make-your-own').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});heading.focus({preventScroll:true});return;}
  const build=e.target.closest('[data-build]');if(build){e.preventDefault();openBuilder(build.dataset.build);closeMenu();return;}
  if(e.target.closest('[data-cart]')){openCart();return;}
@@ -124,33 +156,156 @@ window.addEventListener('pagehide',event=>{if(!event.persisted&&brandObjectUrl)U
 
 
 
-// The landing station uses the same build model and validation as the configurator.
-const makerBuild=cloneBuild(coverPresets[0].build);
-function setMakerExtensions(values){makerBuild.extensions=[...values];makerBuild.extension=values[0]||'none';}
-function renderMaker(){
- const extensionStack=getExtensions(makerBuild);
- document.querySelector('#maker-sizes').innerHTML=parts.foundation.map(p=>`<button data-maker-type="foundation" data-maker-value="${p.id}" aria-pressed="${makerBuild.foundation===p.id}">${safe(p.name)}</button>`).join('');
- document.querySelector('#maker-parts').innerHTML=['lid','body','base'].map(type=>`<label>${type[0].toUpperCase()+type.slice(1)}<select data-maker-select="${type}">${parts[type].map(p=>`<option value="${p.id}" ${makerBuild[type]===p.id?'selected':''} ${type==='base'&&p.id==='storage'&&extensionStack.includes('long')?'disabled':''}>${safe(p.name)}</option>`).join('')}</select></label>`).join('');
- document.querySelector('#maker-stack').innerHTML=extensionStack.length?extensionStack.map((id,index)=>`<div class="maker-module"><span><i aria-hidden="true"></i>${id==='long'?'Long':'Short'} extension <small>+${id==='long'?300:150} ml</small></span><button data-maker-remove="${index}" aria-label="Remove ${id} extension ${index+1}">Remove</button></div>`).join(''):'<p class="maker-empty-stack">No extensions. Add a module below.</p>';
- document.querySelector('#maker-extensions').innerHTML=['short','long'].map(id=>`<button data-maker-add="${id}" ${extensionStack.length>=3||id==='long'&&makerBuild.base==='storage'?'disabled':''}>Add ${id} <span>+${id==='long'?300:150} ml</span></button>`).join('');
- document.querySelector('#maker-colors').innerHTML=coverPresets.map(p=>`<button data-maker-color="${p.id}" aria-label="${safe(p.name)}" aria-pressed="${makerBuild.colors.body===p.build.colors.body&&makerBuild.colors.lid===p.build.colors.lid}"><span class="color-pair" aria-hidden="true"><i style="background:${p.build.colors.lid}"></i><i style="background:${p.build.colors.body}"></i></span>${safe(p.name)}</button>`).join('');
- document.querySelector('#maker-extras').innerHTML=parts.attachments.map(p=>`<button data-maker-extra="${p.id}" aria-pressed="${makerBuild.attachments.includes(p.id)}">${safe(p.name)}</button>`).join('');
- const preview=document.querySelector('#maker-preview');preview.innerHTML=bottleIllustration(makerBuild,'inline-maker',{fit:false});
- const svg=preview.querySelector('svg');if(svg){const height=svg.viewBox.baseVal.height;svg.style.height=`${height*1.1}px`;svg.style.width=`${svg.viewBox.baseVal.width*1.1}px`;}
- const estimate=estimateBuild(makerBuild);document.querySelector('#maker-capacity').textContent=`Approx. ${estimate.capacity} ml · ${extensionStack.length} ${extensionStack.length===1?'extension':'extensions'}`;document.querySelector('#maker-price').textContent=`${money(estimate.total)} demo total`;
- preview.setAttribute('aria-label',`${estimate.capacity} milliliter bottle, ${extensionStack.length} stacked extensions, ${makerBuild.attachments.length} attachments`);
+// Build placement is separate from the valid configuration sent to review.
+const makerBuild=coverBuild({extensions:[],middleSections:[],attachments:[],attachmentColors:{}});
+let makerPlaced=new Set();
+let makerActive='base';
+let makerOpenPanels=new Set();
+let makerNotice='';
+const coreOrder=['base','body','lid'];
+const coreLabels={base:'Base',body:'Body',lid:'Lid'};
+function makerCoreComplete(){return coreOrder.every(id=>makerPlaced.has(id));}
+function partPhoto(type,id){return `/assets/${type==='attachments'?'attachment-'+id:'part-'+type+'-'+id}.webp`;}
+function makerSwatches(value,target,label='Color'){
+ const choices=palettes.some(p=>p.value.toLowerCase()===value.toLowerCase())?palettes:[{name:'Current',value},...palettes];
+ return `<div class="maker-color-field"><div class="maker-field-heading"><span>${label}</span><label class="maker-custom-color">Custom<input type="color" value="${value}" data-maker-custom-color="${target}" aria-label="Custom ${label.toLowerCase()}" /></label></div><div class="maker-swatches" role="group" aria-label="${label}">${choices.map(p=>`<button class="maker-swatch" style="--swatch:${p.value}" data-maker-action="color" data-maker-target="${target}" data-maker-value="${p.value}" aria-label="${label}: ${safe(p.name)}" aria-pressed="${p.value.toLowerCase()===value.toLowerCase()}" title="${safe(p.name)}"></button>`).join('')}</div></div>`;
 }
-function commitMaker(change){const before=cloneBuild(makerBuild);change();const error=validateBuild(makerBuild);if(error)Object.assign(makerBuild,before);const notice=document.querySelector('#maker-error');notice.textContent=error;notice.hidden=!error;renderMaker();}
-document.querySelector('.maker-controls').addEventListener('click',e=>{
- const part=e.target.closest('[data-maker-type]'),add=e.target.closest('[data-maker-add]'),remove=e.target.closest('[data-maker-remove]'),color=e.target.closest('[data-maker-color]'),extra=e.target.closest('[data-maker-extra]');
- if(part)commitMaker(()=>makerBuild[part.dataset.makerType]=part.dataset.makerValue);
- else if(add&&!add.disabled)commitMaker(()=>setMakerExtensions([...getExtensions(makerBuild),add.dataset.makerAdd]));
- else if(remove)commitMaker(()=>setMakerExtensions(getExtensions(makerBuild).filter((_,i)=>i!==Number(remove.dataset.makerRemove))));
- else if(color)commitMaker(()=>makerBuild.colors={...coverPresets.find(p=>p.id===color.dataset.makerColor).build.colors});
- else if(extra)commitMaker(()=>{const id=extra.dataset.makerExtra;makerBuild.attachments=makerBuild.attachments.includes(id)?makerBuild.attachments.filter(x=>x!==id):[...makerBuild.attachments,id];});
- else return;
- const key=part?`[data-maker-type="${part.dataset.makerType}"][data-maker-value="${part.dataset.makerValue}"]`:add?`[data-maker-add="${add.dataset.makerAdd}"]`:remove?'[data-maker-add="short"]':color?`[data-maker-color="${color.dataset.makerColor}"]`:`[data-maker-extra="${extra.dataset.makerExtra}"]`;document.querySelector(key)?.focus({preventScroll:true});
+function makerTypeCards(type,current,target,placed=true){
+ return `<div class="maker-type-cards">${parts[type].map(p=>{const disabled=type==='base'&&p.id==='storage'&&getExtensions(makerBuild).includes('long');return `<button class="maker-type-card" data-maker-action="type" data-maker-target="${target}" data-maker-value="${p.id}" aria-pressed="${placed&&current===p.id}" ${disabled?'disabled title="Remove long extensions before choosing a Storage base"':''}><img src="${partPhoto(type,p.id)}" width="1536" height="1024" alt="" loading="eager" decoding="async" /><span>${safe(p.name)}</span>${!placed?'<small>Add to bottle</small>':''}</button>`;}).join('')}</div>`;
+}
+function makerSizeToggle(value,target){return `<div class="maker-size-toggle" role="group" aria-label="Module size">${['short','long'].map(size=>`<button data-maker-action="size" data-maker-target="${target}" data-maker-value="${size}" aria-pressed="${value===size}" ${target.startsWith('extension:')&&size==='long'&&makerBuild.base==='storage'?'disabled':''}>${size==='short'?'Short':'Long'} <span>+${size==='short'?150:300} ml</span></button>`).join('')}</div>`;}
+function makerEditorMarkup(){
+ const [kind,key]=makerActive.split(':');
+ if(coreOrder.includes(kind)){
+  const placed=makerPlaced.has(kind),next=coreOrder.find(id=>!makerPlaced.has(id));
+  const title=placed?`Edit your ${kind}.`:`Choose your ${kind}.`;
+  let html=`<div class="maker-editor-heading"><p>${placed?'EDIT PART':'ADD A PART'}</p><h3>${title}</h3><span>${placed?(next?`${coreLabels[kind]} added. Pick a color, then continue.`:'Your main bottle is ready. Change any color or add extras.'):'Choose a type to add this piece.'}</span></div>${makerTypeCards(kind,makerBuild[kind],kind,placed)}`;
+  if(placed&&kind==='body')html+=`<label class="maker-field-heading maker-foundation-field">Body size<select data-maker-change="foundation">${parts.foundation.map(p=>`<option value="${p.id}" ${p.id===makerBuild.foundation?'selected':''}>${safe(p.name)} · approx. ${p.capacity} ml</option>`).join('')}</select></label>`;
+  if(placed)html+=makerSwatches(makerBuild.colors[kind],kind,`${coreLabels[kind]} color`)+(kind==='body'&&makerBuild.body==='handle'?makerSwatches(makerBuild.colors.handle,'handle','Handle color'):'');
+  if(placed)html+=`<div class="maker-editor-actions">${next?`<button class="maker-next" data-maker-action="edit" data-maker-target="${next}">Next: ${next}</button>`:makerCoreComplete()?'<button class="maker-next" data-maker-action="more">Customize extras</button>':''}<button class="maker-remove" data-maker-action="remove-core" data-maker-target="${kind}">Remove ${kind}</button></div>`;
+  return html;
+ }
+ if(kind==='middle'){
+  const index=Number(key),section=getMiddleSections(makerBuild)[index];if(!section){makerActive='body';return makerEditorMarkup();}
+  return `<div class="maker-editor-heading"><p>BODY SECTION ${index+1}</p><h3>Edit this section.</h3><span>This module stacks above the main body.</span></div>${makerTypeCards('body',section.type,makerActive)}${makerSizeToggle(section.size,makerActive)}${makerSwatches(section.color,makerActive,'Section color')}<button class="maker-remove" data-maker-action="remove-middle" data-maker-value="${index}">Remove section</button>`;
+ }
+ if(kind==='extension'){
+  const index=Number(key),size=getExtensions(makerBuild)[index];if(!size){makerActive='body';return makerEditorMarkup();}
+  return `<div class="maker-editor-heading"><p>LOWER EXTENSION ${index+1}</p><h3>Edit this extension.</h3><span>This module sits between the body and base.</span></div><div class="maker-extension-photo"><img src="${partPhoto('extension',size)}" width="1536" height="1024" alt="${size} clear extension" /></div>${makerSizeToggle(size,makerActive)}${makerSwatches(getExtensionColors(makerBuild)[index],makerActive,'Extension color')}<button class="maker-remove" data-maker-action="remove-extension" data-maker-value="${index}">Remove extension</button>`;
+ }
+ if(kind==='attachment'){
+  const id=key,part=parts.attachments.find(p=>p.id===id);if(!part||!makerBuild.attachments.includes(id)){makerActive='body';return makerEditorMarkup();}
+  return `<div class="maker-editor-heading"><p>ATTACHMENT</p><h3>${safe(part.name)}</h3><span>Choose a type and its own color.</span></div><div class="maker-attachment-selected"><img src="${partPhoto('attachments',id)}" width="1536" height="1024" alt="${safe(part.name)}" /></div><label class="maker-field-heading maker-attachment-type">Attachment type<select data-maker-change="attachment-type" data-maker-target="${id}">${parts.attachments.map(p=>`<option value="${p.id}" ${p.id===id?'selected':''} ${p.id!==id&&makerBuild.attachments.includes(p.id)?'disabled':''}>${safe(p.name)}</option>`).join('')}</select></label>${makerSwatches(getAttachmentColor(makerBuild,id),makerActive,'Attachment color')}<button class="maker-remove" data-maker-action="remove-attachment" data-maker-value="${id}">Remove attachment</button>`;
+ }
+ makerActive='base';return makerEditorMarkup();
+}
+function makerAdditionsMarkup(){
+ const ready=makerCoreComplete(),middles=getMiddleSections(makerBuild),extensions=getExtensions(makerBuild);
+ if(!ready)return '<div class="maker-extras-locked"><strong>4. Optional extras</strong><p>Finish your base, body, and lid to add more pieces.</p></div>';
+ const row=(target,label,color,remove,index)=>`<div class="maker-added-row"><button data-maker-action="edit" data-maker-target="${target}" aria-pressed="${makerActive===target}" ${!ready?'disabled':''}><i style="background:${color}"></i><span>${safe(label)}</span></button><button class="maker-row-remove" data-maker-action="${remove}" data-maker-value="${index}" aria-label="Remove ${safe(label)}">Remove</button></div>`;
+ return `<div class="maker-additions-heading"><h4>4. Optional extras</h4><p>Add more pieces, or review your bottle as it is.</p></div><details data-maker-panel="middle" ${makerOpenPanels.has('middle')?'open':''}><summary><span class="maker-extra-title">Body sections<small>Add above the main body</small></span><span>${middles.length} / 3</span></summary><div class="maker-addition-content">${middles.map((m,i)=>row(`middle:${i}`,`${parts.body.find(p=>p.id===m.type)?.name} · ${m.size}`,m.color,'remove-middle',i)).join('')}<button class="maker-add-button" data-maker-action="add-middle" ${!ready||middles.length>=3?'disabled':''}>Add body section</button><p>Stack above the main body.</p></div></details><details data-maker-panel="extension" ${makerOpenPanels.has('extension')?'open':''}><summary><span class="maker-extra-title">Clear extensions<small>Add below the main body</small></span><span>${extensions.length} / 3</span></summary><div class="maker-addition-content">${extensions.map((id,i)=>row(`extension:${i}`,`${id==='long'?'Long':'Short'} extension`,getExtensionColors(makerBuild)[i],'remove-extension',i)).join('')}<div class="maker-extension-add">${['short','long'].map(id=>`<button data-maker-action="add-extension" data-maker-value="${id}" ${!ready||extensions.length>=3||id==='long'&&makerBuild.base==='storage'?'disabled':''}>Add ${id} <span>+${id==='long'?300:150} ml</span></button>`).join('')}</div><p>Stack below the body. Long extensions require a Standard or Narrow base.</p></div></details><details data-maker-panel="attachment" ${makerOpenPanels.has('attachment')?'open':''}><summary><span class="maker-extra-title">Attachments<small>Carry, clip, or accessorize</small></span><span>${makerBuild.attachments.length} added</span></summary><div class="maker-attachment-picker">${parts.attachments.map(p=>`<button data-maker-action="attachment" data-maker-value="${p.id}" aria-pressed="${makerBuild.attachments.includes(p.id)}" aria-label="${makerBuild.attachments.includes(p.id)?'Edit':'Add'} ${safe(p.name)}" ${!ready?'disabled':''}><img src="${partPhoto('attachments',p.id)}" width="1536" height="1024" alt="" loading="lazy" /><span>${safe(p.name)}</span></button>`).join('')}</div></details>`;
+}
+function makerVisibleParts(){return [...makerPlaced,...(makerPlaced.has('body')?['extensions','middleSections','attachments']:[])];}
+function makerTotals(){
+ const estimate=estimateBuild(makerBuild);
+ if(!makerPlaced.has('body'))return {capacity:0,total:(makerPlaced.has('base')?parts.base.find(p=>p.id===makerBuild.base).price:0)+(makerPlaced.has('lid')?parts.lid.find(p=>p.id===makerBuild.lid).price:0)};
+ return {capacity:estimate.capacity,total:estimate.total-(makerPlaced.has('base')?0:parts.base.find(p=>p.id===makerBuild.base).price)-(makerPlaced.has('lid')?0:parts.lid.find(p=>p.id===makerBuild.lid).price)};
+}
+function renderMakerPreview(){
+ const preview=document.querySelector('#maker-preview');
+ if(!makerPlaced.size){preview.innerHTML='<div class="maker-empty-state"><span>01</span><h3>Start with the base.</h3><p>Choose a shape to place your first piece.</p></div>';return;}
+ preview.innerHTML=bottleIllustration(makerBuild,'inline-maker',{fit:false,visibleParts:makerVisibleParts()});
+ const svg=preview.querySelector('svg');if(!svg)return;
+ svg.removeAttribute('aria-hidden');svg.setAttribute('role','group');svg.setAttribute('aria-label','Edit bottle parts');
+ const box=svg.getBBox();
+ if(box.width>0&&box.height>0){
+  const layout=previewLayout({width:preview.clientWidth,height:preview.clientHeight,bounds:box,bottom:Number(svg.dataset.bottleBottom)});
+  svg.setAttribute('viewBox',layout.viewBox);
+  svg.style.width='100%';svg.style.height='100%';
+ }
+ svg.querySelectorAll('[data-module]').forEach(group=>{const id=group.dataset.module;if(!coreOrder.includes(id)&&!id.includes(':'))return;group.classList.add('maker-preview-part');group.classList.toggle('is-selected',id===makerActive);group.setAttribute('role','button');group.setAttribute('tabindex','0');group.setAttribute('aria-label',`Edit ${makerPartName(id)}`);});
+}
+function makerPartName(id){if(coreLabels[id])return coreLabels[id].toLowerCase();const [kind,key]=id.split(':');if(kind==='middle')return `body section ${Number(key)+1}`;if(kind==='extension')return `extension ${Number(key)+1}`;return parts.attachments.find(p=>p.id===key)?.name.toLowerCase()||'part';}
+function renderMaker(){
+ document.querySelector('#maker-core-tabs').innerHTML=coreOrder.map((id,index)=>`<button data-maker-action="edit" data-maker-target="${id}" aria-pressed="${makerActive===id}" ${id==='body'&&!makerPlaced.has('base')&&!makerPlaced.has('body')||id==='lid'&&!makerPlaced.has('body')&&!makerPlaced.has('lid')?'disabled':''}><span>${makerPlaced.has(id)?'✓':`0${index+1}`}</span>${coreLabels[id]}</button>`).join('');
+ const nextPart=coreOrder.find(id=>!makerPlaced.has(id));document.querySelector('#maker-guidance').textContent=nextPart?`Step ${coreOrder.indexOf(nextPart)+1} of 3 · Add your ${nextPart}`:'Your main bottle is complete. Extras are optional.';
+ document.querySelector('#maker-editor').innerHTML=makerEditorMarkup();document.querySelector('#maker-additions').innerHTML=makerAdditionsMarkup();renderMakerPreview();
+ const totals=makerTotals();document.querySelector('#maker-piece-count').textContent=`${makerPlaced.size} of 3 main parts`;
+ document.querySelector('#maker-preview-hint').textContent=makerPlaced.size?'Click any part to edit it.':'Choose a base to begin.';
+ document.querySelector('#maker-capacity').textContent=totals.capacity?`Approx. ${totals.capacity} ml`:'Your build starts here';document.querySelector('#maker-price').textContent=`${money(totals.total)} demo total`;
+ document.querySelector('#maker-continue').disabled=!makerCoreComplete();document.querySelector('#maker-review-note').textContent=makerCoreComplete()?'Estimated capacity · Demo pricing':'Add a base, body, and lid to review.';
+ const notice=document.querySelector('#maker-error');notice.textContent=makerNotice;notice.hidden=!makerNotice;colorHeadingPeriods(document.querySelector('#make-your-own'));
+}
+function makerFocusDescriptor(element){if(!element)return null;const names=['makerAction','makerTarget','makerValue','makerCustomColor','makerChange','module'];const descriptor={};for(const name of names)if(element.dataset?.[name]!==undefined)descriptor[name]=element.dataset[name];return Object.keys(descriptor).length?descriptor:null;}
+function makerScrollBehavior(){return matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth';}
+function focusMakerEditor(scroll=false){
+ const editor=document.querySelector('#maker-editor'),heading=editor?.querySelector('h3');
+ if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true});}
+ if(scroll)editor?.scrollIntoView({behavior:'instant',block:'nearest'});
+}
+function restoreMakerFocus(descriptor){
+ if(!descriptor)return false;
+ const candidates=document.querySelectorAll('#make-your-own [data-maker-action],#make-your-own [data-maker-custom-color],#make-your-own [data-maker-change],#make-your-own [data-module]');
+ for(const element of candidates){if(!element.disabled&&Object.entries(descriptor).every(([key,value])=>element.dataset[key]===value)){element.focus({preventScroll:true});return true;}}
+ focusMakerEditor();return false;
+}
+function commitMaker(change){
+ const scrollX=window.scrollX,scrollY=window.scrollY;
+ const focus=makerFocusDescriptor(document.activeElement);
+ const before=cloneBuild(makerBuild),beforePlaced=new Set(makerPlaced),beforeActive=makerActive;
+ change();const error=validateBuild(makerBuild);if(error){Object.keys(makerBuild).forEach(k=>delete makerBuild[k]);Object.assign(makerBuild,before);makerPlaced=beforePlaced;makerActive=beforeActive;}
+ makerNotice=error||'';renderMaker();restoreMakerFocus(focus);window.scrollTo({left:scrollX,top:scrollY,behavior:'instant'});
+}
+function setMakerColor(target,color){
+ if(coreOrder.includes(target)||target==='handle'){makerBuild.colors[target]=color;return;}
+ const [kind,key]=target.split(':');if(kind==='middle'){const sections=getMiddleSections(makerBuild);sections[Number(key)].color=color;setMiddleSections(makerBuild,sections);}
+ if(kind==='extension'){const colors=getExtensionColors(makerBuild);colors[Number(key)]=color;setBuildExtensions(makerBuild,getExtensions(makerBuild),colors);}
+ if(kind==='attachment'){makerBuild.attachmentColors={...makerBuild.attachmentColors,[key]:color};}
+}
+function normalizeMakerPart(target){return parts.attachments.some(p=>p.id===target)?`attachment:${target}`:target;}
+function editMakerPart(target){makerActive=normalizeMakerPart(target);makerNotice='';renderMaker();focusMakerEditor();}
+function runMakerAction(button){
+ const action=button.dataset.makerAction,target=button.dataset.makerTarget,value=button.dataset.makerValue;
+ if(button.disabled)return;
+ if(action==='edit'){editMakerPart(target);if(button.classList.contains('maker-next'))focusMakerEditor(true);return;}
+ if(action==='more'){makerOpenPanels.add('middle');renderMaker();const additions=document.querySelector('#maker-additions'),first=additions.querySelector('[data-maker-action="add-middle"]:not([disabled]),summary');first?.focus({preventScroll:true});additions.scrollIntoView({behavior:makerScrollBehavior(),block:'nearest'});return;}
+ commitMaker(()=>{
+  if(action==='type'){
+   if(coreOrder.includes(target)){makerBuild[target]=value;makerPlaced.add(target);}
+   else {const index=Number(target.split(':')[1]),sections=getMiddleSections(makerBuild);sections[index].type=value;setMiddleSections(makerBuild,sections);}
+  }
+  if(action==='color')setMakerColor(target,value);
+  if(action==='size'){
+   const [kind,key]=target.split(':');if(kind==='middle'){const sections=getMiddleSections(makerBuild);sections[Number(key)].size=value;setMiddleSections(makerBuild,sections);}else{const ids=getExtensions(makerBuild);ids[Number(key)]=value;setBuildExtensions(makerBuild,ids,getExtensionColors(makerBuild));}
+  }
+  if(action==='remove-core'){makerPlaced.delete(target);makerActive=target;}
+  if(action==='add-middle'){const sections=getMiddleSections(makerBuild);sections.push({type:'smooth',size:'short',color:makerBuild.colors.body});setMiddleSections(makerBuild,sections);makerActive=`middle:${sections.length-1}`;makerOpenPanels.add('middle');}
+  if(action==='remove-middle'){setMiddleSections(makerBuild,getMiddleSections(makerBuild).filter((_,i)=>i!==Number(value)));makerActive='body';}
+  if(action==='add-extension'){const ids=getExtensions(makerBuild),colors=getExtensionColors(makerBuild);ids.push(value);colors.push(makerBuild.colors.extension);setBuildExtensions(makerBuild,ids,colors);makerActive=`extension:${ids.length-1}`;makerOpenPanels.add('extension');}
+  if(action==='remove-extension'){setBuildExtensions(makerBuild,getExtensions(makerBuild).filter((_,i)=>i!==Number(value)),getExtensionColors(makerBuild).filter((_,i)=>i!==Number(value)));makerActive='body';}
+  if(action==='attachment'){if(!makerBuild.attachments.includes(value)){makerBuild.attachments.push(value);makerBuild.attachmentColors={...makerBuild.attachmentColors,[value]:getAttachmentColor(makerBuild,value)};}makerActive=`attachment:${value}`;makerOpenPanels.add('attachment');}
+  if(action==='remove-attachment'){makerBuild.attachments=makerBuild.attachments.filter(id=>id!==value);delete makerBuild.attachmentColors?.[value];makerActive='body';}
+ });
+ if(['add-middle','add-extension','attachment'].includes(action)&&!makerNotice)focusMakerEditor(true);
+ if(['remove-core','remove-middle','remove-extension','remove-attachment'].includes(action))focusMakerEditor();
+}
+document.querySelector('.maker-controls').addEventListener('click',e=>{const button=e.target.closest('[data-maker-action]');if(button)runMakerAction(button);});
+document.querySelector('.maker-controls').addEventListener('toggle',e=>{const details=e.target.closest('details[data-maker-panel]');if(!details||!details.isConnected)return;if(details.open)makerOpenPanels.add(details.dataset.makerPanel);else makerOpenPanels.delete(details.dataset.makerPanel);},true);
+document.querySelector('.maker-controls').addEventListener('change',e=>{
+ const color=e.target.closest('[data-maker-custom-color]');if(color){commitMaker(()=>setMakerColor(color.dataset.makerCustomColor,color.value));return;}
+ const field=e.target.closest('[data-maker-change]');if(!field)return;
+ if(field.dataset.makerChange==='foundation')commitMaker(()=>makerBuild.foundation=field.value);
+ if(field.dataset.makerChange==='attachment-type')commitMaker(()=>{const previous=field.dataset.makerTarget,next=field.value,color=getAttachmentColor(makerBuild,previous);makerBuild.attachments=makerBuild.attachments.map(id=>id===previous?next:id);delete makerBuild.attachmentColors?.[previous];makerBuild.attachmentColors={...makerBuild.attachmentColors,[next]:color};makerActive=`attachment:${next}`;});
+ if(field.dataset.makerChange==='attachment-type')document.querySelector('[data-maker-change="attachment-type"]')?.focus({preventScroll:true});
 });
-document.querySelector('.maker-controls').addEventListener('change',e=>{const select=e.target.closest('[data-maker-select]');if(!select)return;const type=select.dataset.makerSelect;const value=select.value;commitMaker(()=>makerBuild[type]=value);document.querySelector(`[data-maker-select="${type}"]`)?.focus({preventScroll:true});});
-document.querySelector('#maker-continue').addEventListener('click',()=>openBuilder(makerBuild));
+document.querySelector('#maker-preview').addEventListener('click',e=>{const group=e.target.closest('[data-module]');if(group)editMakerPart(group.dataset.module);});
+document.querySelector('#maker-preview').addEventListener('keydown',e=>{const group=e.target.closest('[data-module]');if(group&&['Enter',' '].includes(e.key)){e.preventDefault();editMakerPart(group.dataset.module);}});
+document.querySelector('#maker-reset').addEventListener('click',()=>{const clean=coverBuild({extensions:[],middleSections:[],attachments:[],attachmentColors:{}});Object.keys(makerBuild).forEach(k=>delete makerBuild[k]);Object.assign(makerBuild,clean);makerPlaced=new Set();makerActive='base';makerOpenPanels=new Set();makerNotice='';renderMaker();});
+document.querySelector('#maker-continue').addEventListener('click',()=>{if(makerCoreComplete())openBuilder(makerBuild,{step:5});});
+const makerPreviewSize=document.querySelector('#maker-preview-size');
+makerPreviewSize?.addEventListener('click',()=>{const stage=document.querySelector('.maker-stage'),expanded=stage.classList.toggle('is-expanded');makerPreviewSize.setAttribute('aria-expanded',String(expanded));makerPreviewSize.textContent=expanded?'Compact':'Expand';requestAnimationFrame(renderMakerPreview);});
+let makerResizeFrame;
+window.addEventListener('resize',()=>{cancelAnimationFrame(makerResizeFrame);makerResizeFrame=requestAnimationFrame(renderMakerPreview);});
 renderMaker();
+
+initI18n();

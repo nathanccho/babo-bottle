@@ -22,11 +22,12 @@ npm run preview -- --port 3000
 
 ## Included
 
-- Focused landing-page journey: combination imagery, brief how-it-works steps, eight attachments, and an inline make-your-own station.
-- The inline bottle grows/shrinks with size and extension changes, updates estimated price/capacity, and carries the exact setup into the full configurator.
-- Optional engraving-style branding preview stays in an expandable section after the main journey.
+- Focused landing-page journey: combination imagery, brief how-it-works steps, a filterable 27-part gallery with a mixed 15-part preview (three rows of five on desktop) and a See all control, and an inline make-your-own station.
+- The inline station starts empty and builds a base, body, and lid piece by piece. Extra upper sections, lower extensions, and accessories have individual type/color controls; the exact build carries into Review.
+- An engraving-style branding preview stays collapsed behind an Add your brand button. Header and footer brand links open it.
 - Six-step builder with per-module and handle colors, up to three stacked extensions and optional attachments, live estimated capacity and component pricing.
-- Live 2D configuration preview with independent colors, compact handles, capacity extensions, and attachments.
+- Live 2D configuration preview with independent colors, compact handles, capacity extensions, and 14 attachments, including a protective boot, sling, spare straws, infuser, spare seals, and stickers.
+- Persistent KR/EN language switching for storefront text, builder controls, product information, dialogs, and accessibility labels. Korean headings and body copy have suitable rounded font fallbacks.
 - Presets, random colors, match-all, undo/redo, reset, and shareable configurations encoded in the URL.
 - Compatibility validation for the concept part family; long extensions and storage bases cannot be combined.
 - Search, product details, persistent local cart, component SKU breakdown, quantity controls, and demo order review.
@@ -48,14 +49,21 @@ Fonts load from Google Fonts with local sans-serif fallbacks. No application tra
 
 - `index.html`, `style.css`, `app.js`: storefront and homepage interactions.
 - `data.js`: concept catalog, color-specific SKUs, estimates, and compatibility rules.
+- `i18n.js`, `ko-data.js`: Korean UI and catalog translations, dynamic text translation, and persisted language preference.
 - `configurator.js`, `configurator.css`: builder, cart, search, products, and informational dialogs.
 - `illustrations.js`: original code-generated SVG product and accessory illustrations.
 - `public/assets/`: optimized full-resolution WebP marketing photographs.
 - `assets/originals/`: lossless PNG image masters.
-- `assets/README.md`, `assets/COVER_AND_ATTACHMENTS.md`, `assets/FINAL_PHOTO_EDITS.md`, `assets/STUDIO_COVER.md`, `assets/EXPLODED_AND_SNACK.md`, `assets/ATTACHMENT_LOOP.md`, `assets/UPWARD_THREADS.md`: image methods, reference paths, exact prompts, and native resolutions.
+- `assets/README.md`, `assets/COVER_AND_ATTACHMENTS.md`, `assets/FINAL_PHOTO_EDITS.md`, `assets/STUDIO_COVER.md`, `assets/EXPLODED_AND_SNACK.md`, `assets/ATTACHMENT_LOOP.md`, `assets/UPWARD_THREADS.md`, `assets/VARIED_COVER.md`, `assets/PART_GALLERY_REBUILD.md`, `assets/LID_CORRECTIONS.md`, `assets/EVERYDAY_ACCESSORIES.md`: image methods, reference paths, exact prompts, and native resolutions.
 
 ## Validation
 
 The Vite production build passes. The expanded data model was checked across 138,240 configurations including stacked modules and attachment combinations. Price/capacity/BOM sums, compatibility at every stack position, legacy migration, sharing, and cart restoration were checked.
 
-Chrome checks covered the rendered desktop storefront, 400px mobile layout, live builder changes, independent colors, incompatible-part disabling, component review, add/remove cart, demo order review, and share-link restoration. Screen capture was intermittent; the source is responsive, but physical iOS/Android device testing and a full WCAG audit remain outstanding.
+Chrome checks covered the rendered desktop storefront, 400px mobile layout, live builder changes, independent colors, incompatible-part disabling, component review, add/remove cart, demo order review, and share-link restoration. The latest polish reviewed the 375px iPhone SE emulated layout and mobile menu navigation, and added 20 focused keyboard/cart checks. It fixes focus recovery, actual-height product dialog scrolling, touch targets, and a compact sticky mobile preview with an Expand option. Native browser control was intermittent, so a complete final mobile tap-through, physical iOS/Android device testing, and a full WCAG audit remain outstanding.
+
+The latest accessory expansion checks 16,384 attachment combinations, all 14 independent colors in cart/share persistence, six new standalone products, and 25 SVG renders. All 27 part photos exist at 1536 × 1024. Korean catalog coverage and Korean search checks pass. The final production build and whitespace checks pass. The latest native-browser capture attempt failed with a ScreenCaptureKit stream error, so the newest Korean layout and accessory additions still need a visual browser pass.
+
+Korean/English fixture checks also pass for text and accessibility-attribute roundtrips, same-node dynamic updates, protected tab title, untranslated identifiers/URLs/color values, and dynamic gallery/cart/builder labels. These source-level checks do not replace the outstanding visual browser pass.
+
+Builder stability polish: the preview uses a fixed product centerline and floor instead of recentering each part bounding box. Core assembly keeps a consistent scale, while tall stacks fit the stage. Control changes preserve page scroll, and only explicit next-step/new-module actions reposition the editor. Cards use eager full-resolution part photos with consistent contain sizing. Twenty camera cases pass for mobile/desktop sizes, steady core scale, floor alignment, and tall stacks. Chrome at 375px confirmed base → body → lid and enabled Review; capture failed again during the final color screenshot.

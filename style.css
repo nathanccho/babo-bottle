@@ -136,3 +136,23 @@
 @media(max-width:1150px){.hero-copy{padding-top:100px}.hero h1{font-size:5vw}.hero-description{font-size:14px}.branding-copy{padding:60px 10%}.branding-controls{margin-top:25px}.branding-section,.branding-visual{min-height:600px}.brand-bottle-preview{width:390px;max-width:100%}.promise-strip{gap:25px;padding-left:5%;padding-right:5%}}
 @media(max-width:900px){.hero-copy{padding-top:105px;width:49%}.hero h1{font-size:5.3vw}.hero-description{font-size:12px;max-width:290px}.promise-strip>a{gap:10px;font-size:11px}.promise-strip small{font-size:9px}.promise-strip svg{width:32px}.branding-section{margin-bottom:70px;min-height:570px}.branding-copy{padding:50px 9%}.branding-copy h2{font-size:43px}.branding-description{font-size:12px}.branding-visual{min-height:570px}.brand-bottle-preview{width:360px}.brand-logo-overlay{padding:6px}#brand-logo-text{font-size:13px}.brand-logo-overlay.long-label #brand-logo-text{font-size:10px}.anatomy-label{font-size:8px}.anatomy-label i{width:25px}.cleaning-copy h2{font-size:38px}}
 @media(max-width:640px){.wordmark{width:111px;height:37px}.hero-copy{padding:38px 5% 0;width:100%}.hero h1{font-size:clamp(40px,10.3vw,60px);line-height:1.16;margin-top:21px;white-space:nowrap}.hero h1 br:nth-of-type(1){display:block}.hero h1>.hero-brand{white-space:nowrap}.hero-description{font-size:13px;max-width:310px;margin-top:19px}.hero-actions{margin-top:24px}.hero{min-height:740px}.hero-art{height:430px;margin-top:19px}.hero-photography{bottom:48px}.hero-photo-hotspot{padding-bottom:20px}.promise-strip{grid-template-columns:1fr;gap:20px;padding:26px 8%}.promise-strip>a{justify-content:flex-start;gap:18px;font-size:13px}.promise-strip>a>span{gap:4px}.promise-strip small{font-size:11px}.promise-strip svg{width:35px;height:37px}.section-heading h2{font-size:42px}.anatomy-copy h2{font-size:44px}.anatomy-copy>p:not(.eyebrow){font-size:13px}.anatomy-art{min-height:460px}.anatomy-label{font-size:8px;padding:8px 10px;gap:6px}.anatomy-label i{width:31px}.label-lid{left:3%;top:20%}.label-body{left:1%;top:45%}.label-extension{right:2%;top:68%}.label-base{right:6%;top:84%}.branding-section{grid-template-columns:1fr;margin:0 3% 60px;padding:35px 7%;gap:0;min-height:0}.branding-copy{display:contents}.branding-copy>.eyebrow{grid-row:1}.branding-copy>h2{grid-row:2;font-size:45px;margin-top:15px}.branding-description{grid-row:3;font-size:13px;margin-top:17px}.branding-visual{grid-row:4;min-height:0;background:transparent;margin-top:25px}.brand-bottle-preview{width:250px;height:375px;max-height:none}.branding-controls{grid-row:5;max-width:none;margin-top:25px;padding-bottom:0}.brand-logo-overlay{padding:4px}#brand-logo-text{font-size:10px}.brand-logo-overlay.long-label #brand-logo-text{font-size:8px}.brand-preview-note{margin-top:17px}.branding-controls>label,.branding-controls>.brand-upload-label{font-size:12px}.everyday-copy h2{font-size:46px}.cleaning-copy h2{font-size:42px}.closing-section h2{font-size:45px}.closing-description{font-size:12px;max-width:300px;margin-top:20px}.footer-wordmark{margin-top:35px;margin-bottom:22px}.footer-pitch{font-size:28px}}
+
+/* Keep controls readable and comfortable on phones. */
+@media(max-width:640px){
+  .header-tools .icon-button,.header-tools .cart-button{min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:center}
+  .header-tools{gap:4px}
+  .hero-preset{min-height:44px;font-size:10px}
+  .text-link{min-height:44px;font-size:12px}
+  .step p,.product-bottom p,.accessory-bottom p,.day-description p{font-size:12px}
+  .product-card-bottom>button,.footer-links a,.footer-links button{min-height:44px;display:flex;align-items:center;font-size:12px}
+  .footer-links>div{gap:2px}
+  #brand-text{font-size:16px}
+  .day-tabs button{min-height:44px;font-size:12px}
+}
+@media(max-width:380px){
+  .hero h1{font-size:clamp(31px,9.8vw,38px);white-space:normal}
+  .hero-actions{flex-wrap:wrap;gap:12px 22px}
+  .hero-actions .button{min-height:48px}
+  .branding-copy>h2,.section-heading h2,.cleaning-copy h2,.everyday-copy h2{font-size:36px}
+  .wordmark{width:98px;flex-shrink:0}
+}

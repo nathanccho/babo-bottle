@@ -1,122 +1,68 @@
 import './style.css';
 import './configurator.css';
-import { presets, products, cloneBuild, estimateBuild, parts } from './data.js';
+import { presets, products, cloneBuild, estimateBuild, validateBuild, getExtensions, parts } from './data.js';
 import { initCommerce, openBuilder, openCart, openProduct, openSearch, openInfo } from './configurator.js';
-import { bottleIllustration, accessoryIllustration, stepIllustration } from './illustrations.js';
+import { bottleIllustration } from './illustrations.js';
 
 const money = value => `$${Number(value).toFixed(0)}`;
 const safe = str => String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const featured = presets.slice(0, 3);
-const accessoryIds = ['strap','pouch','clip','charm','phone','brush'];
-const accessoryItems = accessoryIds.map(id => products.find(p => p.partType === 'attachments' && p.partId === id)).filter(Boolean);
-document.querySelector('#accessory-products').innerHTML = accessoryItems.map((p,i) => `
-  <article class="accessory-card"><button class="accessory-visual" data-product="${safe(p.id)}" aria-label="View ${safe(p.name)}" style="background:${['#e8e4da','#eee0d2','#e0e8e2','#e9e5dc'][i%4]};width:100%">${accessoryIllustration(p.partId,`accessory-${i}`)}<span>${safe(p.name.toUpperCase())}</span></button><div class="accessory-bottom"><div><h3>${safe(p.name)}</h3><p>${money(p.price)} · Concept accessory</p></div><button data-product="${safe(p.id)}" aria-label="Explore ${safe(p.name)}">+</button></div></article>`).join('');
-
-['foundation','lid','body','accessories'].forEach(step => {document.querySelector(`#step-${step}`).innerHTML = stepIllustration(step);});
-
-
-document.querySelector('.hero-presets').innerHTML = featured.map((p,i) => `<button class="hero-preset" aria-pressed="${i===0}" data-hero-preset="${safe(p.id)}" style="--preset-color:${p.build.colors.lid}" aria-label="Preview ${safe(p.name)}"><i class="preset-dot" aria-hidden="true"></i>${safe(p.name)}<span aria-hidden="true">↗</span></button>`).join('');
-let activeHeroPreset = featured[0].id;
-let heroImageSize = { width: 1536, height: 1024 };
-const heroPhoto = document.querySelector('#hero-photo');
-const heroPhotoMobile = document.querySelector('#hero-photo-mobile');
-const heroPhotography = document.querySelector('#hero-photography');
-const heroMedia = window.matchMedia('(max-width: 640px)');
-const partRegions = [
-  ['coral','Straw lid',255,65,245,230],['coral','Smooth body',250,310,240,345],
-  ['coral','Clear extension',250,675,245,140],['coral','Base',245,835,250,135],
-  ['alpine','Loop lid',640,100,250,235],['alpine','Ribbed body',635,355,245,420],
-  ['alpine','Carry strap',880,370,130,415],['alpine','Narrow base',640,810,250,110],
-  ['ink','Chug lid',1070,25,255,185],['ink','Handle body',1055,245,195,315],
-  ['ink','Compact handle',1250,300,100,175],['ink','Clear extension',1060,580,255,240],
-  ['ink','Base',1060,835,260,140]
+function coverBuild(overrides){return cloneBuild({...presets[0].build,extension:'none',extensions:[],attachments:[],...overrides});}
+const coverPresets=[
+ {id:'coral',name:'Coral + cream',build:coverBuild({foundation:'core',lid:'straw',body:'smooth',extensions:['short'],base:'standard',colors:{lid:'#f36f60',body:'#f6e9ce',extension:'#eeeae2',base:'#007d87',handle:'#f36f60'}})},
+ {id:'navy',name:'Navy + blue',build:coverBuild({lid:'loop',body:'textured',base:'standard',colors:{lid:'#233c61',body:'#7fa1c1',extension:'#eeeae2',base:'#a4d5cd',handle:'#233c61'}})},
+ {id:'sage',name:'Sage + mint',build:coverBuild({lid:'chug',body:'smooth',extensions:['short'],base:'standard',colors:{lid:'#a1b18d',body:'#cadbc0',extension:'#eeeae2',base:'#ead7b0',handle:'#a1b18d'}})},
+ {id:'rose',name:'Rose + cream',build:coverBuild({lid:'straw',body:'smooth',extensions:['long'],base:'standard',attachments:['pouch','charm','strap'],colors:{lid:'#c97978',body:'#f6e9ce',extension:'#eeeae2',base:'#c97978',handle:'#bd8686'}})},
+ {id:'teal',name:'Teal + sand',build:coverBuild({lid:'loop',body:'smooth',extensions:['short'],base:'standard',colors:{lid:'#007d87',body:'#ecd5af',extension:'#eeeae2',base:'#007d87',handle:'#007d87'}})},
+ {id:'lavender',name:'Lavender + cream',build:coverBuild({lid:'chug',body:'textured',base:'standard',attachments:['charm'],colors:{lid:'#b9a6ce',body:'#c7b2d6',extension:'#eeeae2',base:'#f6e9ce',handle:'#b9a6ce'}})}
 ];
-const partHotspots=document.querySelector('#hero-photo-hotspots');
-partHotspots.innerHTML=`<svg class="part-hit-map" viewBox="0 0 1536 1024" preserveAspectRatio="xMidYMid slice" aria-label="Explore bottle parts">${partRegions.map(([id,name,x,y,w,h])=>`<a href="#" data-build="${id}" data-part-name="${name}" aria-label="${name}: customize ${featured.find(p=>p.id===id).name}" aria-describedby="hero-part-tooltip"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="16"/><title>${name}</title></a>`).join('')}</svg><span id="hero-part-tooltip" class="part-tooltip" role="tooltip" hidden></span>`;
-const partMap=partHotspots.querySelector('svg');
-const partTooltip=partHotspots.querySelector('.part-tooltip');
-function showPart(link,event){
-  partTooltip.textContent=link.dataset.partName;partTooltip.hidden=false;
-  const bounds=partHotspots.getBoundingClientRect();
-  const target=link.getBoundingClientRect();
-  const x=event?.clientX ? event.clientX-bounds.left : target.left-bounds.left+target.width/2;
-  const y=event?.clientY ? event.clientY-bounds.top : target.top-bounds.top;
-  partTooltip.style.left=`${Math.max(78,Math.min(bounds.width-78,x))}px`;
-  partTooltip.style.top=`${Math.max(12,Math.min(bounds.height-42,y-40))}px`;
-}
-partHotspots.querySelectorAll('[data-part-name]').forEach(link=>{
-  link.addEventListener('pointerenter',e=>showPart(link,e));
-  link.addEventListener('pointermove',e=>showPart(link,e));
-  link.addEventListener('focus',()=>showPart(link));
-  link.addEventListener('blur',()=>{partTooltip.hidden=true;});
-  link.addEventListener('click',e=>{
-    e.preventDefault();
-    if(window.matchMedia('(hover: none)').matches && partTooltip.dataset.selected!==link.dataset.partName){
-      e.stopPropagation();partTooltip.dataset.selected=link.dataset.partName;showPart(link,e);
-    }
-  });
-  link.addEventListener('keydown',e=>{if(e.key===' '){e.preventDefault();link.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}));}if(e.key==='Escape')partTooltip.hidden=true;});
+let activeCover='coral';
+function renderCoverChips(){document.querySelector('.hero-presets').innerHTML=coverPresets.map(p=>`<button class="hero-preset" data-cover-preset="${p.id}" aria-pressed="${p.id===activeCover}"><span class="color-pair" aria-hidden="true"><i style="background:${p.build.colors.lid}"></i><i style="background:${p.build.colors.body}"></i></span>${safe(p.name)}</button>`).join('');}
+renderCoverChips();
+
+const coverRegions=[["coral","Straw lid","147,143 159,109 217,99 272,58 315,75 285,148 305,174 295,222 140,201"],["coral","Smooth body","132,229 297,254 269,476 97,452"],["coral","Short extension","98,483 257,508 244,575 85,550"],["coral","Base","82,576 240,601 230,660 71,635"],["navy","Loop lid","394,171 407,119 437,86 478,73 526,86 554,121 560,171 549,221 394,196"],["navy","Ribbed body","381,238 544,263 497,558 325,531"],["navy","Base","320,572 488,596 478,662 307,637"],["sage","Chug lid","631,132 686,131 693,78 748,88 744,129 796,115 813,132 814,157 792,174 783,203 627,178"],["sage","Smooth body","612,220 776,246 738,489 571,463"],["sage","Short extension","570,489 729,513 718,577 558,554"],["sage","Base","555,585 718,610 706,667 545,643"],["rose","Straw lid","1409,134 1423,104 1480,95 1554,49 1579,63 1547,142 1566,162 1555,211 1398,187"],["rose","Smooth body","1387,225 1553,251 1525,433 1357,407"],["rose","Long extension","1357,440 1514,465 1488,593 1330,570"],["rose","Base","1327,592 1488,617 1478,669 1318,646"],["rose","Carry strap","1550,219 1580,253 1600,518 1580,588 1544,589 1526,562 1548,270"],["rose","Pouch","1361,302 1548,326 1532,417 1346,395"],["rose","Flower charm","1492,365 1532,372 1554,405 1531,435 1495,424 1482,394"],["teal","Loop lid","1668,171 1678,123 1711,88 1753,75 1797,88 1826,123 1835,174 1824,224 1666,198"],["teal","Smooth body","1657,238 1810,261 1780,498 1618,475"],["teal","Short extension","1620,502 1777,526 1764,583 1606,560"],["teal","Base","1604,591 1761,615 1750,668 1592,644"],["lavender","Chug lid","1911,132 1962,132 1971,80 2026,91 2022,132 2074,117 2089,133 2091,156 2068,175 2059,203 1903,179"],["lavender","Ribbed body","1886,227 2051,253 2002,559 1839,534"],["lavender","Base","1836,570 2002,595 1990,664 1821,639"],["lavender","Bead charm","2041,252 2078,256 2093,286 2094,368 2074,394 2052,377 2049,301"]];
+const partLayer=document.querySelector('#cover-part-layer');
+partLayer.innerHTML=`<svg class="cover-part-map" viewBox="0 0 2172 724" preserveAspectRatio="none" aria-label="Explore bottle parts">${coverRegions.map(([id,name,points])=>`<a href="#make-your-own" data-cover-part="${id}" data-part-name="${name}" aria-label="${name}, ${safe(coverPresets.find(p=>p.id===id).name)}. Customize this bottle." aria-describedby="cover-part-tooltip"><polygon points="${points}"/></a>`).join('')}</svg>`;
+const partTooltip=document.querySelector('#cover-part-tooltip');
+function showCoverPart(link){partTooltip.textContent=link.dataset.partName;partTooltip.hidden=false;}
+partLayer.querySelectorAll('[data-cover-part]').forEach(link=>{
+ link.addEventListener('pointerenter',()=>showCoverPart(link));link.addEventListener('focus',()=>showCoverPart(link));link.addEventListener('blur',()=>{partTooltip.hidden=true;});
+ link.addEventListener('keydown',e=>{if(e.key==='Escape')partTooltip.hidden=true;if(e.key===' '){e.preventDefault();link.click();}});
 });
-partHotspots.addEventListener('pointerleave',()=>{partTooltip.hidden=true;delete partTooltip.dataset.selected;});
-
-function updateHeroPhoto() {
-  const i = Math.max(0, featured.findIndex(p => p.id === activeHeroPreset));
-  const panelWidth = heroImageSize.width / 3;
-  heroPhotoMobile.setAttribute('viewBox', `${i*panelWidth} 0 ${panelWidth} ${heroImageSize.height}`);
-  heroPhotoMobile.setAttribute('aria-label', `${featured[i].name} exploded bottle concept`);
-  partMap.setAttribute('viewBox',heroMedia.matches?`${i*512} 0 512 1024`:'0 0 1536 1024');
-  partMap.setAttribute('preserveAspectRatio',heroMedia.matches?'xMidYMid meet':'xMidYMid slice');
-  partHotspots.querySelectorAll('[data-part-name]').forEach(link=>{link.tabIndex=heroMedia.matches&&link.dataset.build!==activeHeroPreset?-1:0;});
-  partTooltip.hidden=true;delete partTooltip.dataset.selected;
-
-  const image = heroPhotoMobile.querySelector('image');
-  image.setAttribute('width', heroImageSize.width);image.setAttribute('height', heroImageSize.height);
-  document.querySelector('.hero-photo-fallback').innerHTML = featured.map((p,j) => `<div class="hero-fallback-bottle ${j===i?'is-active':''}">${bottleIllustration(p.build,`hero-fallback-${j}`)}</div>`).join('');
+partLayer.addEventListener('pointerleave',()=>{partTooltip.hidden=true;});
+function selectCover(id,scrollPhoto=true){
+ const index=coverPresets.findIndex(p=>p.id===id);const preset=coverPresets[index];if(!preset)return;
+ activeCover=preset.id;Object.assign(makerBuild,cloneBuild(preset.build));renderMaker();renderCoverChips();
+ if(scrollPhoto){const campaign=document.querySelector('#hero-campaign');const center=[.09,.205,.315,.67,.79,.91][index]*campaign.scrollWidth;campaign.scrollTo({left:Math.max(0,center-campaign.clientWidth/2),behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});}
+ document.querySelector('#cover-selection-status').textContent=`${preset.name} selected in the bottle builder below.`;
 }
-function markHeroPhotoReady() {
-  if (!heroPhoto.naturalWidth) return;
-  heroImageSize = {width: heroPhoto.naturalWidth, height: heroPhoto.naturalHeight};
-  heroPhoto.width = heroImageSize.width;heroPhoto.height = heroImageSize.height;
-  heroPhotography.classList.add('is-loaded');updateHeroPhoto();
+
+const accessoryIds=['strap','pouch','clip','charm','phone','brush'];
+document.querySelector('#accessory-products').innerHTML=accessoryIds.map(id=>products.find(p=>p.partType==='attachments'&&p.partId===id)).filter(Boolean).map(p=>`<article class="accessory-card"><button class="accessory-visual" data-product="${safe(p.id)}" aria-label="View ${safe(p.name)}"><img src="/assets/attachment-${p.partId}.webp" width="1024" height="1536" alt="${safe(p.name)} accessory concept" loading="lazy" decoding="async" /></button><div class="accessory-bottom"><div><h3>${safe(p.name)}</h3><p>${money(p.price)} · Concept accessory</p></div><button data-product="${safe(p.id)}">Details</button></div></article>`).join('');
+
+function colorHeadingPeriods(root=document){
+ for(const heading of root.querySelectorAll('h1,h2,h3,.hero-slogan')){
+  const walker=document.createTreeWalker(heading,NodeFilter.SHOW_TEXT,{acceptNode:node=>node.parentElement.closest('.heading-period,.brand-period')?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT});
+  const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
+  for(const node of nodes){if(!node.textContent.includes('.'))continue;const fragments=node.textContent.split('.');const replacement=document.createDocumentFragment();fragments.forEach((text,i)=>{replacement.append(document.createTextNode(text));if(i<fragments.length-1){const period=document.createElement('span');period.className='heading-period';period.textContent='.';replacement.append(period);}});node.replaceWith(replacement);}
+ }
 }
-heroPhoto.addEventListener('load', markHeroPhotoReady);
-if(heroPhoto.complete) markHeroPhotoReady();
-heroPhoto.addEventListener('error',()=>heroPhotography.classList.remove('is-loaded'));
-updateHeroPhoto();
-heroMedia.addEventListener('change', updateHeroPhoto);
-initCommerce();
-
-document.addEventListener('click', e => {
-  const buildButton = e.target.closest('[data-build]');
-  if(buildButton){
-    openBuilder(buildButton.dataset.build);
-    closeMenu();return;
-  }
-  const heroButton=e.target.closest('[data-hero-preset]');
-  if(heroButton){
-    activeHeroPreset=heroButton.dataset.heroPreset;
-    updateHeroPhoto();
-    document.querySelectorAll('[data-hero-preset]').forEach(b=>b.setAttribute('aria-pressed',String(b===heroButton)));
-
-    return;
-  }
-  if(e.target.closest('[data-cart]')){openCart();return;}
-  const productButton=e.target.closest('[data-product]');if(productButton){openProduct(productButton.dataset.product);return;}
-  if(e.target.closest('[data-search]')){openSearch();return;}
-  const infoButton=e.target.closest('[data-info]');if(infoButton){openInfo(infoButton.dataset.info);closeMenu();return;}
-  if(e.target.closest('.main-nav a'))closeMenu();
-});
+colorHeadingPeriods();
 
 const menuToggle=document.querySelector('.menu-toggle');
 function closeMenu(){document.querySelector('.main-nav').classList.remove('open');menuToggle.setAttribute('aria-expanded','false');menuToggle.setAttribute('aria-label','Open menu');}
 menuToggle.addEventListener('click',()=>{const open=menuToggle.getAttribute('aria-expanded')!=='true';document.querySelector('.main-nav').classList.toggle('open',open);menuToggle.setAttribute('aria-expanded',String(open));menuToggle.setAttribute('aria-label',open?'Close menu':'Open menu');});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();});
-
-document.querySelector('#current-year').textContent='2026';
-const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target);}}),{threshold:.08});
-document.querySelectorAll('.section-heading,.steps-grid,.product-grid,.accessory-grid,.closing-section h2').forEach(el=>{el.classList.add('reveal');observer.observe(el);});
-
-
+document.addEventListener('click',e=>{
+ const part=e.target.closest('[data-cover-part]');if(part){e.preventDefault();partTooltip.hidden=true;selectCover(part.dataset.coverPart,false);const heading=document.querySelector('#maker-heading');heading.tabIndex=-1;document.querySelector('#make-your-own').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});heading.focus({preventScroll:true});return;}
+ const cover=e.target.closest('[data-cover-preset]');if(cover){selectCover(cover.dataset.coverPreset);document.querySelector(`[data-cover-preset="${cover.dataset.coverPreset}"]`)?.focus({preventScroll:true});return;}
+ const build=e.target.closest('[data-build]');if(build){e.preventDefault();openBuilder(build.dataset.build);closeMenu();return;}
+ if(e.target.closest('[data-cart]')){openCart();return;}
+ const product=e.target.closest('[data-product]');if(product){openProduct(product.dataset.product);return;}
+ if(e.target.closest('[data-search]')){openSearch();return;}
+ const info=e.target.closest('[data-info]');if(info){openInfo(info.dataset.info);closeMenu();return;}
+ if(e.target.closest('.main-nav a'))closeMenu();
+});
+initCommerce();
 
 // Brand files stay in this browser. Only a local object URL is used for preview.
 const brandTextInput=document.querySelector('#brand-text');
@@ -137,7 +83,7 @@ function updateBrandText(){
   const label=brandTextInput.value.trim()||'YOUR BRAND';
   brandText.textContent=label;
   brandOverlay.classList.toggle('long-label',label.length>14);
-  brandOverlay.setAttribute('aria-label',`Brand preview: ${label}`);
+  brandOverlay.setAttribute('aria-label',`Engraving preview: ${label}`);
 }
 function showBrandError(message){brandError.textContent=message;brandError.hidden=false;}
 brandTextInput.addEventListener('input',()=>{
@@ -153,7 +99,7 @@ brandUpload.addEventListener('change',()=>{
   probe.onload=()=>{
     if(version!==brandUploadVersion){URL.revokeObjectURL(candidateUrl);return;}
     clearBrandImage();brandObjectUrl=candidateUrl;brandImage.src=candidateUrl;brandImage.hidden=false;brandText.hidden=true;
-    brandOverlay.setAttribute('aria-label','Your uploaded logo on the bottle');brandError.hidden=true;brandStatus.textContent='Logo preview updated.';
+    brandOverlay.setAttribute('aria-label','Your uploaded logo engraved on the bottle');brandError.hidden=true;brandStatus.textContent='Engraving preview updated.';
   };
   probe.onerror=()=>{URL.revokeObjectURL(candidateUrl);if(version===brandUploadVersion){showBrandError('This image could not be opened. Choose another file.');brandUpload.value='';}};
   probe.src=candidateUrl;
@@ -165,33 +111,34 @@ updateBrandText();
 window.addEventListener('pagehide',event=>{if(!event.persisted&&brandObjectUrl)URL.revokeObjectURL(brandObjectUrl);});
 
 
-// A simple first build, carried into the full component configurator.
-const makerBuild=cloneBuild(presets[0].build);
-makerBuild.extension='none';
-let previousMakerHeight=0;
+
+// The landing station uses the same build model and validation as the configurator.
+const makerBuild=cloneBuild(coverPresets[0].build);
+function setMakerExtensions(values){makerBuild.extensions=[...values];makerBuild.extension=values[0]||'none';}
 function renderMaker(){
- const options=(id,type,values)=>{document.querySelector(id).innerHTML=values.map(p=>`<button data-maker-type="${type}" data-maker-value="${p.id}" aria-pressed="${makerBuild[type]===p.id}">${safe(p.name)}</button>`).join('');};
- options('#maker-sizes','foundation',parts.foundation);
- options('#maker-extensions','extension',parts.extension);
- document.querySelector('#maker-colors').innerHTML=presets.slice(0,3).map(p=>`<button data-maker-color="${p.id}" aria-label="${safe(p.name)}" aria-pressed="${makerBuild.colors.body===p.build.colors.body && makerBuild.colors.lid===p.build.colors.lid}"><i style="background:${p.build.colors.lid}"></i><i style="background:${p.build.colors.body}"></i>${safe(p.name)}</button>`).join('');
- document.querySelector('#maker-extras').innerHTML=parts.attachments.map(p=>`<button data-maker-extra="${p.id}" aria-pressed="${makerBuild.attachments.includes(p.id)}">${makerBuild.attachments.includes(p.id)?'✓':'+'} ${safe(p.name)}</button>`).join('');
- const preview=document.querySelector('#maker-preview');preview.innerHTML=bottleIllustration(makerBuild,'inline-maker');
- const height=38+(makerBuild.foundation==='mini'?104:makerBuild.foundation==='max'?164:136)+(makerBuild.extension==='none'?0:makerBuild.extension==='long'?54:32)+37;
- if(previousMakerHeight && !matchMedia('(prefers-reduced-motion: reduce)').matches) preview.querySelector('svg').animate([{transform:`scaleY(${previousMakerHeight/height})`},{transform:'scaleY(1)'}],{duration:350,easing:'cubic-bezier(.2,.7,.3,1)'});
- previousMakerHeight=height;
- const estimate=estimateBuild(makerBuild);
- document.querySelector('#maker-capacity').textContent=`Approx. ${estimate.capacity} ml`;
- document.querySelector('#maker-price').textContent=`$${estimate.total} demo total`;
- preview.setAttribute('aria-label',`${estimate.capacity} milliliter bottle, ${makerBuild.extension==='none'?'no':makerBuild.extension} extension, ${makerBuild.attachments.length} attachments`);
+ const extensionStack=getExtensions(makerBuild);
+ document.querySelector('#maker-sizes').innerHTML=parts.foundation.map(p=>`<button data-maker-type="foundation" data-maker-value="${p.id}" aria-pressed="${makerBuild.foundation===p.id}">${safe(p.name)}</button>`).join('');
+ document.querySelector('#maker-parts').innerHTML=['lid','body','base'].map(type=>`<label>${type[0].toUpperCase()+type.slice(1)}<select data-maker-select="${type}">${parts[type].map(p=>`<option value="${p.id}" ${makerBuild[type]===p.id?'selected':''} ${type==='base'&&p.id==='storage'&&extensionStack.includes('long')?'disabled':''}>${safe(p.name)}</option>`).join('')}</select></label>`).join('');
+ document.querySelector('#maker-stack').innerHTML=extensionStack.length?extensionStack.map((id,index)=>`<div class="maker-module"><span><i aria-hidden="true"></i>${id==='long'?'Long':'Short'} extension <small>+${id==='long'?300:150} ml</small></span><button data-maker-remove="${index}" aria-label="Remove ${id} extension ${index+1}">Remove</button></div>`).join(''):'<p class="maker-empty-stack">No extensions. Add a module below.</p>';
+ document.querySelector('#maker-extensions').innerHTML=['short','long'].map(id=>`<button data-maker-add="${id}" ${extensionStack.length>=3||id==='long'&&makerBuild.base==='storage'?'disabled':''}>Add ${id} <span>+${id==='long'?300:150} ml</span></button>`).join('');
+ document.querySelector('#maker-colors').innerHTML=coverPresets.map(p=>`<button data-maker-color="${p.id}" aria-label="${safe(p.name)}" aria-pressed="${makerBuild.colors.body===p.build.colors.body&&makerBuild.colors.lid===p.build.colors.lid}"><span class="color-pair" aria-hidden="true"><i style="background:${p.build.colors.lid}"></i><i style="background:${p.build.colors.body}"></i></span>${safe(p.name)}</button>`).join('');
+ document.querySelector('#maker-extras').innerHTML=parts.attachments.map(p=>`<button data-maker-extra="${p.id}" aria-pressed="${makerBuild.attachments.includes(p.id)}">${safe(p.name)}</button>`).join('');
+ const preview=document.querySelector('#maker-preview');preview.innerHTML=bottleIllustration(makerBuild,'inline-maker',{fit:false});
+ const svg=preview.querySelector('svg');if(svg){const height=svg.viewBox.baseVal.height;svg.style.height=`${height*1.1}px`;svg.style.width=`${svg.viewBox.baseVal.width*1.1}px`;}
+ const estimate=estimateBuild(makerBuild);document.querySelector('#maker-capacity').textContent=`Approx. ${estimate.capacity} ml · ${extensionStack.length} ${extensionStack.length===1?'extension':'extensions'}`;document.querySelector('#maker-price').textContent=`${money(estimate.total)} demo total`;
+ preview.setAttribute('aria-label',`${estimate.capacity} milliliter bottle, ${extensionStack.length} stacked extensions, ${makerBuild.attachments.length} attachments`);
 }
+function commitMaker(change){const before=cloneBuild(makerBuild);change();const error=validateBuild(makerBuild);if(error)Object.assign(makerBuild,before);const notice=document.querySelector('#maker-error');notice.textContent=error;notice.hidden=!error;renderMaker();}
 document.querySelector('.maker-controls').addEventListener('click',e=>{
- const part=e.target.closest('[data-maker-type]'),color=e.target.closest('[data-maker-color]'),extra=e.target.closest('[data-maker-extra]');
- if(part)makerBuild[part.dataset.makerType]=part.dataset.makerValue;
- else if(color)makerBuild.colors=cloneBuild(presets.find(p=>p.id===color.dataset.makerColor).build.colors);
- else if(extra){const id=extra.dataset.makerExtra;makerBuild.attachments=makerBuild.attachments.includes(id)?makerBuild.attachments.filter(x=>x!==id):[...makerBuild.attachments,id];}
+ const part=e.target.closest('[data-maker-type]'),add=e.target.closest('[data-maker-add]'),remove=e.target.closest('[data-maker-remove]'),color=e.target.closest('[data-maker-color]'),extra=e.target.closest('[data-maker-extra]');
+ if(part)commitMaker(()=>makerBuild[part.dataset.makerType]=part.dataset.makerValue);
+ else if(add&&!add.disabled)commitMaker(()=>setMakerExtensions([...getExtensions(makerBuild),add.dataset.makerAdd]));
+ else if(remove)commitMaker(()=>setMakerExtensions(getExtensions(makerBuild).filter((_,i)=>i!==Number(remove.dataset.makerRemove))));
+ else if(color)commitMaker(()=>makerBuild.colors={...coverPresets.find(p=>p.id===color.dataset.makerColor).build.colors});
+ else if(extra)commitMaker(()=>{const id=extra.dataset.makerExtra;makerBuild.attachments=makerBuild.attachments.includes(id)?makerBuild.attachments.filter(x=>x!==id):[...makerBuild.attachments,id];});
  else return;
- const key=part?'[data-maker-type="'+part.dataset.makerType+'"][data-maker-value="'+part.dataset.makerValue+'"]':color?'[data-maker-color="'+color.dataset.makerColor+'"]':'[data-maker-extra="'+extra.dataset.makerExtra+'"]';
- renderMaker();document.querySelector(key)?.focus({preventScroll:true});
+ const key=part?`[data-maker-type="${part.dataset.makerType}"][data-maker-value="${part.dataset.makerValue}"]`:add?`[data-maker-add="${add.dataset.makerAdd}"]`:remove?'[data-maker-add="short"]':color?`[data-maker-color="${color.dataset.makerColor}"]`:`[data-maker-extra="${extra.dataset.makerExtra}"]`;document.querySelector(key)?.focus({preventScroll:true});
 });
+document.querySelector('.maker-controls').addEventListener('change',e=>{const select=e.target.closest('[data-maker-select]');if(!select)return;const type=select.dataset.makerSelect;const value=select.value;commitMaker(()=>makerBuild[type]=value);document.querySelector(`[data-maker-select="${type}"]`)?.focus({preventScroll:true});});
 document.querySelector('#maker-continue').addEventListener('click',()=>openBuilder(makerBuild));
 renderMaker();

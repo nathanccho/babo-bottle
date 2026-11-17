@@ -24,8 +24,8 @@ npm run preview -- --port 3000
 
 - Focused landing-page journey: combination imagery, brief how-it-works steps, six attachments, and an inline make-your-own station.
 - The inline bottle grows/shrinks with size and extension changes, updates estimated price/capacity, and carries the exact setup into the full configurator.
-- Optional branding preview stays in an expandable section after the main journey.
-- Six-step builder with per-module and handle colors, optional extensions and attachments, live estimated capacity and component pricing.
+- Optional engraving-style branding preview stays in an expandable section after the main journey.
+- Six-step builder with per-module and handle colors, up to three stacked extensions and optional attachments, live estimated capacity and component pricing.
 - Live 2D configuration preview with independent colors, compact handles, capacity extensions, and attachments.
 - Presets, random colors, match-all, undo/redo, reset, and shareable configurations encoded in the URL.
 - Compatibility validation for the concept part family; long extensions and storage bases cannot be combined.
@@ -50,12 +50,12 @@ Fonts load from Google Fonts with local sans-serif fallbacks. No application tra
 - `data.js`: concept catalog, color-specific SKUs, estimates, and compatibility rules.
 - `configurator.js`, `configurator.css`: builder, cart, search, products, and informational dialogs.
 - `illustrations.js`: original code-generated SVG product and accessory illustrations.
-- `public/assets/`: six optimized full-resolution WebP images used by the storefront.
-- `assets/originals/`: six lossless PNG image masters.
-- `assets/README.md`: image generation method, exact prompts, and verified native resolutions.
+- `public/assets/`: optimized full-resolution WebP marketing photographs.
+- `assets/originals/`: lossless PNG image masters.
+- `assets/README.md`, `assets/COVER_AND_ATTACHMENTS.md`, `assets/FINAL_PHOTO_EDITS.md`, `assets/STUDIO_COVER.md`: image methods, reference paths, exact prompts, and native resolutions.
 
 ## Validation
 
-The Vite production build passes. The data model was checked across all 432 core component combinations: 384 valid and 48 incompatible long-extension/storage combinations. Valid price and capacity totals match their component sums.
+The Vite production build passes. The expanded data model was checked across 138,240 configurations including stacked modules and attachment combinations. Price/capacity/BOM sums, compatibility at every stack position, legacy migration, sharing, and cart restoration were checked.
 
 Chrome checks covered the rendered desktop storefront, 400px mobile layout, live builder changes, independent colors, incompatible-part disabling, component review, add/remove cart, demo order review, and share-link restoration. Screen capture was intermittent; the source is responsive, but physical iOS/Android device testing and a full WCAG audit remain outstanding.

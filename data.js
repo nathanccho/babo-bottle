@@ -40,6 +40,8 @@ export const parts = {
     { id: 'charm', name: 'Bottle charm', subtitle: 'Removable charm', price: 4, description: 'A removable bottle charm.' },
     { id: 'brush', name: 'Cleaning brush', subtitle: 'Bottle brush', price: 6, description: 'A bottle-cleaning brush concept; final dimensions are unconfirmed.' },
     { id: 'phone', name: 'Phone holder', subtitle: 'Clip-on phone holder', price: 7, description: 'A phone-holder attachment concept; fit and load rating are unverified.' },
+    { id: 'snack', name: 'Snack compartment', subtitle: 'Separate snack storage', price: 10, description: 'A separate snack-compartment attachment concept. Food-contact materials, sealing, and attachment fit are unverified.' },
+    { id: 'ringloop', name: 'Attachment loop', subtitle: 'Rings for clips and charms', price: 6, description: 'A slim silicone-collar concept with two small metal D-rings. Separate from the carabiner. Materials, fit, and load rating are unverified.' },
   ],
 };
 export const MAX_EXTENSIONS = 3;

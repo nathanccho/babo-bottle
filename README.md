@@ -22,7 +22,7 @@ npm run preview -- --port 3000
 
 ## Included
 
-- Focused landing-page journey: combination imagery, brief how-it-works steps, six attachments, and an inline make-your-own station.
+- Focused landing-page journey: combination imagery, brief how-it-works steps, eight attachments, and an inline make-your-own station.
 - The inline bottle grows/shrinks with size and extension changes, updates estimated price/capacity, and carries the exact setup into the full configurator.
 - Optional engraving-style branding preview stays in an expandable section after the main journey.
 - Six-step builder with per-module and handle colors, up to three stacked extensions and optional attachments, live estimated capacity and component pricing.
@@ -52,7 +52,7 @@ Fonts load from Google Fonts with local sans-serif fallbacks. No application tra
 - `illustrations.js`: original code-generated SVG product and accessory illustrations.
 - `public/assets/`: optimized full-resolution WebP marketing photographs.
 - `assets/originals/`: lossless PNG image masters.
-- `assets/README.md`, `assets/COVER_AND_ATTACHMENTS.md`, `assets/FINAL_PHOTO_EDITS.md`, `assets/STUDIO_COVER.md`: image methods, reference paths, exact prompts, and native resolutions.
+- `assets/README.md`, `assets/COVER_AND_ATTACHMENTS.md`, `assets/FINAL_PHOTO_EDITS.md`, `assets/STUDIO_COVER.md`, `assets/EXPLODED_AND_SNACK.md`, `assets/ATTACHMENT_LOOP.md`: image methods, reference paths, exact prompts, and native resolutions.
 
 ## Validation
 
